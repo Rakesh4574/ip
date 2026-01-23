@@ -17,10 +17,18 @@ public class Groot {
                 """);
 
         while (true) {
-            String input = sc.nextLine();
-            System.out.println("__________________________________________________");
-            System.out.println(input);
-            System.out.println("__________________________________________________");
+            String input = sc.nextLine().trim();
+
+            if (input.equalsIgnoreCase("bye")) {
+                System.out.println("__________________________________________________");
+                System.out.println(" Bye. Until next time!");
+                System.out.println("__________________________________________________");
+                break;
+            } else {
+                System.out.println("__________________________________________________");
+                System.out.println(input);
+                System.out.println("__________________________________________________");
+            }
         }
     }
 }
