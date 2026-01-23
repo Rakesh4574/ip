@@ -3,7 +3,7 @@ public class Groot {
         System.out.println("""
                 __________________________________________________
                  Hello! I am Groot. Guardian of your tasks. 
-                 What shall we do today?
+                 What shall we grow today?
                 __________________________________________________
                  Bye. Until next time!
                 __________________________________________________
