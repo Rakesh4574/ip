@@ -2,66 +2,68 @@ import java.util.Scanner;
 
 public class Groot {
 
+    private static final int MAX_TASKS = 100;
+    private Task[] tasks = new Task[MAX_TASKS];
+    private int taskCount = 0;
+
     public static void main(String[] args) {
         new Groot().run();
     }
 
     private void run() {
         Scanner sc = new Scanner(System.in);
-
-        Task[] tasks = new Task[100];
-        int taskCount = 0;
-
-        System.out.println("""
-                __________________________________________________
-                 Hello! I'm Groot
-                 What shall we grow today?
-                __________________________________________________
-                """);
+        printWelcome();
 
         while (true) {
-            String input = sc.nextLine().trim();
+            String input = sc.nextLine();
 
             if (input.equalsIgnoreCase("bye")) {
-                System.out.println("__________________________________________________");
-                System.out.println(" Bye. Hope to see you again soon!");
-                System.out.println("__________________________________________________");
+                printBye();
                 break;
-
-            } else if (input.equalsIgnoreCase("list")) {
-                System.out.println("__________________________________________________");
-                System.out.println(" Here are the tasks in your list:");
-                for (int i = 0; i < taskCount; i++) {
-                    System.out.println(" " + (i + 1) + "." + tasks[i]);
-                }
-                System.out.println("__________________________________________________");
-
-            } else if (input.startsWith("unmark ")) {
-                int index = Integer.parseInt(input.substring(7)) - 1;
-                tasks[index].unmark();
-
-                System.out.println("__________________________________________________");
-                System.out.println(" OK, I've marked this task as not done yet:");
-                System.out.println("   " + tasks[index]);
-                System.out.println("__________________________________________________");
-
-            } else if (input.startsWith("mark ")) {
-                int index = Integer.parseInt(input.substring(5)) - 1;
-                tasks[index].markAsDone();
-
-                System.out.println("__________________________________________________");
-                System.out.println(" Nice! I've marked this task as done:");
-                System.out.println("   " + tasks[index]);
-                System.out.println("__________________________________________________");
-
+            } else if (input.equals("list")) {
+                printList();
+            } else if (input.startsWith("todo ")) {
+                addTodo(input.substring(5));
             } else {
-                tasks[taskCount] = new Task(input);
-                taskCount++;
-
-                System.out.println("__________________________________________________");
-                System.out.println(" added: " + input);
-                System.out.println("__________________________________________________");
+                echo(input);
             }
         }
+    }
+
+    private void addTodo(String description) {
+        tasks[taskCount++] = new Todo(description);
+        System.out.println("__________________________________________________");
+        System.out.println(" Got it. I've added this task:");
+        System.out.println("   " + tasks[taskCount - 1]);
+        System.out.println(" Now you have " + taskCount + " tasks in the list.");
+        System.out.println("__________________________________________________");
+    }
+
+    private void printList() {
+        System.out.println("__________________________________________________");
+        System.out.println(" Here are the tasks in your list:");
+        for (int i = 0; i < taskCount; i++) {
+            System.out.println(" " + (i + 1) + "." + tasks[i]);
+        }
+        System.out.println("__________________________________________________");
+    }
+
+    private void echo(String input) {
+        System.out.println("__________________________________________________");
+        System.out.println(" " + input);
+        System.out.println("__________________________________________________");
+    }
+
+    private void printWelcome() {
+        System.out.println("__________________________________________________");
+        System.out.println(" Hello! I'm Groot.");
+        System.out.println(" What shall we grow today?");
+        System.out.println("__________________________________________________");
+    }
+
+    private void printBye() {
+        System.out.println("__________________________________________________");
+        System.out.println(" Bye. Hope to see you again soon!");
+        System.out.println("__________________________________________________");
     }
 }
