@@ -14,8 +14,8 @@ public class Groot {
 
         System.out.println("""
                 __________________________________________________
-                 Hello! I am Groot.
-                 What shall we grow today?
+                 Hello! I'm Groot
+                 What can I do for you?
                 __________________________________________________
                 """);
 
@@ -30,9 +30,19 @@ public class Groot {
 
             } else if (input.equalsIgnoreCase("list")) {
                 System.out.println("__________________________________________________");
+                System.out.println(" Here are the tasks in your list:");
                 for (int i = 0; i < taskCount; i++) {
                     System.out.println(" " + (i + 1) + "." + tasks[i]);
                 }
+                System.out.println("__________________________________________________");
+
+            } else if (input.startsWith("mark ")) {
+                int index = Integer.parseInt(input.substring(5)) - 1;
+                tasks[index].markAsDone();
+
+                System.out.println("__________________________________________________");
+                System.out.println(" Nice! I've marked this task as done:");
+                System.out.println("   " + tasks[index]);
                 System.out.println("__________________________________________________");
 
             } else {
