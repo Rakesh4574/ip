@@ -14,19 +14,25 @@ public class Groot {
                  Hello! I am Groot.
                  What shall we grow today?
                 __________________________________________________
-                 I am Groot. Until next time!
-                __________________________________________________
                 """);
-    }
 
         while (true) {
-            String input = sc.nextLine();
-            System.out.println("__________________________________________________");
-            System.out.println(" " + input);
-            System.out.println("__________________________________________________");
+            String input = sc.nextLine().trim();
+
+            if (input.equalsIgnoreCase("bye")) {
+                System.out.println("__________________________________________________");
+                System.out.println(" Bye. Hope to see you again soon!");
+                System.out.println("__________________________________________________");
+                break;
+            } else {
+                System.out.println("__________________________________________________");
+                System.out.println(" " + input);
+                System.out.println("__________________________________________________");
+            }
         }
     }
 }
+
 
 
 
