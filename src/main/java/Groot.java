@@ -24,10 +24,23 @@ public class Groot {
                 printList();
             } else if (input.startsWith("todo ")) {
                 addTodo(input.substring(5));
+            } else if (input.startsWith("deadline ")) {
+                addDeadline(input.substring(9));
             } else {
                 echo(input);
             }
         }
+    }
+
+    private void addDeadline(String input) {
+        String[] parts = input.split(" /by ", 2);
+        tasks[taskCount++] = new Deadline(parts[0], parts[1]);
+
+        System.out.println("__________________________________________________");
+        System.out.println(" Got it. I've added this task:");
+        System.out.println("   " + tasks[taskCount - 1]);
+        System.out.println(" Now you have " + taskCount + " tasks in the list.");
+        System.out.println("__________________________________________________");
     }
 
     private void addTodo(String description) {
