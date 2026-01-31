@@ -26,10 +26,26 @@ public class Groot {
                 addTodo(input.substring(5));
             } else if (input.startsWith("deadline ")) {
                 addDeadline(input.substring(9));
+            } else if (input.startsWith("event ")) {
+                addEvent(input.substring(6));
             } else {
                 echo(input);
             }
         }
+    }
+
+    private void addEvent(String input) {
+        String[] firstSplit = input.split(" /from ", 2);
+        String description = firstSplit[0];
+        String[] timeSplit = firstSplit[1].split(" /to ", 2);
+
+        tasks[taskCount++] = new Event(description, timeSplit[0], timeSplit[1]);
+
+        System.out.println("__________________________________________________");
+        System.out.println(" Got it. I've added this task:");
+        System.out.println("   " + tasks[taskCount - 1]);
+        System.out.println(" Now you have " + taskCount + " tasks in the list.");
+        System.out.println("__________________________________________________");
     }
 
     private void addDeadline(String input) {
@@ -45,6 +61,7 @@ public class Groot {
 
     private void addTodo(String description) {
         tasks[taskCount++] = new Todo(description);
+
         System.out.println("__________________________________________________");
         System.out.println(" Got it. I've added this task:");
         System.out.println("   " + tasks[taskCount - 1]);
