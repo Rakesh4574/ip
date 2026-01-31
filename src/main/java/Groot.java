@@ -9,6 +9,9 @@ public class Groot {
     private void run() {
         Scanner sc = new Scanner(System.in);
 
+        String[] tasks = new String[100];
+        int taskCount = 0;
+
         System.out.println("""
                 __________________________________________________
                  Hello! I am Groot.
@@ -24,15 +27,22 @@ public class Groot {
                 System.out.println(" Bye. Hope to see you again soon!");
                 System.out.println("__________________________________________________");
                 break;
-            } else {
+
+            } else if (input.equalsIgnoreCase("list")) {
                 System.out.println("__________________________________________________");
-                System.out.println(" " + input);
+                for (int i = 0; i < taskCount; i++) {
+                    System.out.println(" " + (i + 1) + ". " + tasks[i]);
+                }
+                System.out.println("__________________________________________________");
+
+            } else {
+                tasks[taskCount] = input;
+                taskCount++;
+
+                System.out.println("__________________________________________________");
+                System.out.println(" added: " + input);
                 System.out.println("__________________________________________________");
             }
         }
     }
 }
-
-
-
-
