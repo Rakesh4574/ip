@@ -9,7 +9,7 @@ public class Groot {
     private void run() {
         Scanner sc = new Scanner(System.in);
 
-        String[] tasks = new String[100];
+        Task[] tasks = new Task[100];
         int taskCount = 0;
 
         System.out.println("""
@@ -31,12 +31,12 @@ public class Groot {
             } else if (input.equalsIgnoreCase("list")) {
                 System.out.println("__________________________________________________");
                 for (int i = 0; i < taskCount; i++) {
-                    System.out.println(" " + (i + 1) + ". " + tasks[i]);
+                    System.out.println(" " + (i + 1) + "." + tasks[i]);
                 }
                 System.out.println("__________________________________________________");
 
             } else {
-                tasks[taskCount] = input;
+                tasks[taskCount] = new Task(input);
                 taskCount++;
 
                 System.out.println("__________________________________________________");
