@@ -1,11 +1,9 @@
 public abstract class Task {
     protected String description;
     protected boolean isDone;
-    protected TaskType type;
 
-    public Task(String description, TaskType type) {
+    public Task(String description) {
         this.description = description;
-        this.type = type;
         this.isDone = false;
     }
 
@@ -17,20 +15,9 @@ public abstract class Task {
         isDone = false;
     }
 
-    public String getStatusIcon() {
+    protected String statusIcon() {
         return isDone ? "X" : " ";
     }
 
-    public String toFileString() {
-        return String.format("%s|%d|%s",
-                getTypeIcon(),
-                isDone ? 1 : 0,
-                description);
-    }
-
-    @Override
-    public String toString() {
-        return "[" + type.getIcon() + "][" + getStatusIcon() + "] " + description;
-    }
+    public abstract String serialize();
 }
-

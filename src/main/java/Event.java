@@ -1,16 +1,21 @@
 public class Event extends Task {
-    private String from;
-    private String to;
+    private final String from;
+    private final String to;
 
     public Event(String description, String from, String to) {
-        super(description, TaskType.EVENT);
+        super(description);
         this.from = from;
         this.to = to;
     }
 
     @Override
     public String toString() {
-        return super.toString() + " (from: " + from + " to: " + to + ")";
+        return "[E][" + statusIcon() + "] " + description +
+                " (from: " + from + " to: " + to + ")";
+    }
+
+    @Override
+    public String serialize() {
+        return "E | " + (isDone ? "1" : "0") + " | " + description + " | " + from + " | " + to;
     }
 }
-

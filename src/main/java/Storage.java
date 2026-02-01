@@ -2,68 +2,39 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class Storage {
-    private final String filePath = "data/groot.txt";
+    private final File file;
 
-    public ArrayList<Task> load() {
-        ArrayList<Task> tasks = new ArrayList<>();
+    public Storage(String path) {
+        this.file = new File(path);
+        file.getParentFile().mkdirs();
+    }
 
-        File file = new File(filePath);
-        if (!file.exists()) {
-            return tasks; 
+    public void save(ArrayList<Task> tasks) {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(file))) {
+            for (Task t : tasks) {
+                pw.println(t.serialize());
+            }
+        } catch (IOException ignored) {
         }
+    }
+
+    public void load(ArrayList<Task> tasks) {
+        if (!file.exists()) return;
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
-                tasks.add(parseTask(line));
+                String[] p = line.split(" \\| ");
+                Task t = switch (p[0]) {
+                    case "T" -> new Todo(p[2]);
+                    case "D" -> new Deadline(p[2], p[3]);
+                    case "E" -> new Event(p[2], p[3], p[4]);
+                    default -> null;
+                };
+                if (t != null && p[1].equals("1")) t.markAsDone();
+                if (t != null) tasks.add(t);
             }
-        } catch (IOException e) {
-            System.out.println("Error loading file.");
+        } catch (IOException ignored) {
         }
-
-        return tasks;
-    }
-
-    public void save(ArrayList<Task> tasks) {
-        try {
-            File dir = new File("data");
-            if (!dir.exists()) {
-                dir.mkdir();
-            }
-
-            try (FileWriter fw = new FileWriter(filePath)) {
-                for (Task t : tasks) {
-                    fw.write(t.toFileString() + System.lineSeparator());
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error saving file.");
-        }
-    }
-
-    private Task parseTask(String line) {
-        String[] parts = line.split("\\|");
-        String type = parts[0];
-        boolean isDone = parts[1].equals("1");
-
-        Task task;
-        switch (type) {
-            case "T":
-                task = new Todo(parts[2]);
-                break;
-            case "D":
-                task = new Deadline(parts[2], parts[3]);
-                break;
-            case "E":
-                task = new Event(parts[2], parts[3], parts[4]);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown task type");
-        }
-
-        if (isDone) {
-            task.markAsDone();
-        }
-        return task;
     }
 }
