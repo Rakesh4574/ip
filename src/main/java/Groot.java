@@ -2,8 +2,7 @@ import java.util.Scanner;
 
 public class Groot {
 
-    private static final int MAX_TASKS = 100;
-    private Task[] tasks = new Task[MAX_TASKS];
+    private Task[] tasks = new Task[100];
     private int taskCount = 0;
 
     public static void main(String[] args) {
@@ -12,88 +11,134 @@ public class Groot {
 
     private void run() {
         Scanner sc = new Scanner(System.in);
-        printWelcome();
+        printGreeting();
 
         while (true) {
-            String input = sc.nextLine();
+            try {
+                String input = sc.nextLine().trim();
 
-            if (input.equalsIgnoreCase("bye")) {
-                printBye();
-                break;
-            } else if (input.equals("list")) {
-                printList();
-            } else if (input.startsWith("todo ")) {
-                addTodo(input.substring(5));
-            } else if (input.startsWith("deadline ")) {
-                addDeadline(input.substring(9));
-            } else if (input.startsWith("event ")) {
-                addEvent(input.substring(6));
-            } else {
-                echo(input);
+                if (input.equalsIgnoreCase("bye")) {
+                    printFarewell();
+                    break;
+                }
+
+                handleCommand(input);
+
+            } catch (GrootException e) {
+                printLine();
+                System.out.println(" " + e.getMessage());
+                printLine();
             }
         }
     }
 
-    private void addEvent(String input) {
-        String[] firstSplit = input.split(" /from ", 2);
-        String description = firstSplit[0];
-        String[] timeSplit = firstSplit[1].split(" /to ", 2);
-
-        tasks[taskCount++] = new Event(description, timeSplit[0], timeSplit[1]);
-
-        System.out.println("__________________________________________________");
-        System.out.println(" Got it. I've added this task:");
-        System.out.println("   " + tasks[taskCount - 1]);
-        System.out.println(" Now you have " + taskCount + " tasks in the list.");
-        System.out.println("__________________________________________________");
+    private void handleCommand(String input) throws GrootException {
+        if (input.startsWith("todo")) {
+            handleTodo(input);
+        } else if (input.startsWith("deadline")) {
+            handleDeadline(input);
+        } else if (input.startsWith("event")) {
+            handleEvent(input);
+        } else if (input.equals("list")) {
+            listTasks();
+        } else if (input.startsWith("mark")) {
+            markTask(input, true);
+        } else if (input.startsWith("unmark")) {
+            markTask(input, false);
+        } else {
+            throw new GrootException("I don't understand that command.");
+        }
     }
 
-    private void addDeadline(String input) {
-        String[] parts = input.split(" /by ", 2);
-        tasks[taskCount++] = new Deadline(parts[0], parts[1]);
+    private void handleTodo(String input) throws GrootException {
+        if (input.equals("todo")) {
+            throw new GrootException("A todo needs a description.");
+        }
 
-        System.out.println("__________________________________________________");
-        System.out.println(" Got it. I've added this task:");
-        System.out.println("   " + tasks[taskCount - 1]);
-        System.out.println(" Now you have " + taskCount + " tasks in the list.");
-        System.out.println("__________________________________________________");
-    }
-
-    private void addTodo(String description) {
+        String description = input.substring(5).trim();
         tasks[taskCount++] = new Todo(description);
 
-        System.out.println("__________________________________________________");
-        System.out.println(" Got it. I've added this task:");
-        System.out.println("   " + tasks[taskCount - 1]);
-        System.out.println(" Now you have " + taskCount + " tasks in the list.");
-        System.out.println("__________________________________________________");
+        printAdd(tasks[taskCount - 1]);
     }
 
-    private void printList() {
-        System.out.println("__________________________________________________");
+    private void handleDeadline(String input) throws GrootException {
+        if (!input.contains("/by")) {
+            throw new GrootException("A deadline needs a /by time.");
+        }
+
+        String[] parts = input.substring(9).split("/by", 2);
+        tasks[taskCount++] = new Deadline(parts[0].trim(), parts[1].trim());
+
+        printAdd(tasks[taskCount - 1]);
+    }
+
+    private void handleEvent(String input) throws GrootException {
+        if (!input.contains("/from") || !input.contains("/to")) {
+            throw new GrootException("An event needs /from and /to.");
+        }
+
+        String description = input.substring(6, input.indexOf("/from")).trim();
+        String from = input.substring(input.indexOf("/from") + 5, input.indexOf("/to")).trim();
+        String to = input.substring(input.indexOf("/to") + 3).trim();
+
+        tasks[taskCount++] = new Event(description, from, to);
+        printAdd(tasks[taskCount - 1]);
+    }
+
+    private void markTask(String input, boolean done) throws GrootException {
+        try {
+            int index = Integer.parseInt(input.split(" ")[1]) - 1;
+
+            if (done) {
+                tasks[index].markAsDone();
+                printStatus("Nice! I've marked this task as done:", tasks[index]);
+            } else {
+                tasks[index].markAsNotDone();
+                printStatus("OK, I've marked this task as not done yet:", tasks[index]);
+            }
+        } catch (Exception e) {
+            throw new GrootException("Please specify a valid task number.");
+        }
+    }
+
+    private void listTasks() {
+        printLine();
         System.out.println(" Here are the tasks in your list:");
         for (int i = 0; i < taskCount; i++) {
             System.out.println(" " + (i + 1) + "." + tasks[i]);
         }
-        System.out.println("__________________________________________________");
+        printLine();
     }
 
-    private void echo(String input) {
-        System.out.println("__________________________________________________");
-        System.out.println(" " + input);
-        System.out.println("__________________________________________________");
+    private void printAdd(Task task) {
+        printLine();
+        System.out.println(" Got it. I've added this task:");
+        System.out.println("   " + task);
+        System.out.println(" Now you have " + taskCount + " tasks in the list.");
+        printLine();
     }
 
-    private void printWelcome() {
-        System.out.println("__________________________________________________");
+    private void printStatus(String msg, Task task) {
+        printLine();
+        System.out.println(" " + msg);
+        System.out.println("   " + task);
+        printLine();
+    }
+
+    private void printGreeting() {
+        printLine();
         System.out.println(" Hello! I'm Groot.");
         System.out.println(" What shall we grow today?");
-        System.out.println("__________________________________________________");
+        printLine();
     }
 
-    private void printBye() {
-        System.out.println("__________________________________________________");
+    private void printFarewell() {
+        printLine();
         System.out.println(" Bye. Hope to see you again soon!");
+        printLine();
+    }
+
+    private void printLine() {
         System.out.println("__________________________________________________");
     }
 }
