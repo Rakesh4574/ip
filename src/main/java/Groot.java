@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -28,7 +29,7 @@ public class Groot {
             try {
                 handleCommand(input);
                 storage.save(tasks);
-            } catch (GrootException e) {
+            } catch (Exception e) {
                 System.out.println(LINE);
                 System.out.println(" " + e.getMessage());
                 System.out.println(LINE);
@@ -49,7 +50,7 @@ public class Groot {
         System.out.println(LINE);
     }
 
-    private void handleCommand(String input) throws GrootException {
+    private void handleCommand(String input) throws Exception {
         if (input.equals("list")) {
             listTasks();
         } else if (input.startsWith("mark ")) {
@@ -57,21 +58,30 @@ public class Groot {
         } else if (input.startsWith("unmark ")) {
             markTask(input, false);
         } else if (input.startsWith("todo ")) {
-            tasks.add(new Todo(input.substring(5).trim()));
-            added(tasks.get(tasks.size() - 1));
+            addTodo(input);
         } else if (input.startsWith("deadline ")) {
-            String[] parts = input.substring(9).split(" /by ", 2);
-            if (parts.length < 2) throw new GrootException("Deadline needs /by");
-            tasks.add(new Deadline(parts[0], parts[1]));
-            added(tasks.get(tasks.size() - 1));
-        } else if (input.startsWith("event ")) {
-            String[] parts = input.substring(6).split(" /from | /to ", 3);
-            if (parts.length < 3) throw new GrootException("Event needs /from and /to");
-            tasks.add(new Event(parts[0], parts[1], parts[2]));
-            added(tasks.get(tasks.size() - 1));
+            addDeadline(input);
         } else {
-            throw new GrootException("I'm not sure what you mean");
+            throw new GrootException("I don't understand that command.");
         }
+    }
+
+    private void addTodo(String input) {
+        Todo t = new Todo(input.substring(5).trim());
+        tasks.add(t);
+        added(t);
+    }
+
+    private void addDeadline(String input) throws Exception {
+        String[] parts = input.substring(9).split(" /by ");
+        if (parts.length < 2) {
+            throw new GrootException("Deadline must have /by yyyy-MM-dd");
+        }
+
+        LocalDate date = Deadline.parseDate(parts[1]);
+        Deadline d = new Deadline(parts[0].trim(), date);
+        tasks.add(d);
+        added(d);
     }
 
     private void listTasks() {
@@ -83,9 +93,11 @@ public class Groot {
         System.out.println(LINE);
     }
 
-    private void markTask(String input, boolean done) throws GrootException {
+    private void markTask(String input, boolean done) throws Exception {
         int index = Integer.parseInt(input.split(" ")[1]) - 1;
-        if (index < 0 || index >= tasks.size()) throw new GrootException("Invalid task number");
+        if (index < 0 || index >= tasks.size()) {
+            throw new GrootException("Invalid task number.");
+        }
 
         if (done) {
             tasks.get(index).markAsDone();
