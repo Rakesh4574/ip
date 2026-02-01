@@ -21,6 +21,13 @@ public abstract class Task {
         return isDone ? "X" : " ";
     }
 
+    public String toFileString() {
+        return String.format("%s|%d|%s",
+                getTypeIcon(),
+                isDone ? 1 : 0,
+                description);
+    }
+
     @Override
     public String toString() {
         return "[" + type.getIcon() + "][" + getStatusIcon() + "] " + description;
