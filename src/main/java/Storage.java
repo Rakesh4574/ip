@@ -1,4 +1,5 @@
 import java.io.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Storage {
@@ -25,14 +26,27 @@ public class Storage {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] p = line.split(" \\| ");
-                Task t = switch (p[0]) {
-                    case "T" -> new Todo(p[2]);
-                    case "D" -> new Deadline(p[2], p[3]);
-                    case "E" -> new Event(p[2], p[3], p[4]);
-                    default -> null;
-                };
-                if (t != null && p[1].equals("1")) t.markAsDone();
-                if (t != null) tasks.add(t);
+                Task t = null;
+
+                switch (p[0]) {
+                    case "T":
+                        t = new Todo(p[2]);
+                        break;
+                    case "D":
+                        LocalDate date = LocalDate.parse(p[3]);
+                        t = new Deadline(p[2], date);
+                        break;
+                    case "E":
+                        t = new Event(p[2], p[3], p[4]);
+                        break;
+                    default:
+                        continue;
+                }
+
+                if (p[1].equals("1")) {
+                    t.markAsDone();
+                }
+                tasks.add(t);
             }
         } catch (IOException ignored) {
         }
