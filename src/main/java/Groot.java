@@ -45,6 +45,8 @@ public class Groot {
             markTask(input, true);
         } else if (input.startsWith("unmark")) {
             markTask(input, false);
+        } else if (input.startsWith("delete")) {
+                deleteTask(input);
         } else {
             throw new GrootException("I don't understand that command.");
         }
@@ -99,6 +101,22 @@ public class Groot {
             }
         } catch (Exception e) {
             throw new GrootException("Please specify a valid task number.");
+        }
+    }
+
+    private void deleteTask(String input) throws GrootException {
+        try {
+            int index = Integer.parseInt(input.split(" ")[1]) - 1;
+            Task removed = tasks.remove(index);
+
+            printLine();
+            System.out.println(" Noted. I've removed this task:");
+            System.out.println("   " + removed);
+            System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
+            printLine();
+
+        } catch (Exception e) {
+            throw new GrootException("Please specify a valid task number to delete.");
         }
     }
 
