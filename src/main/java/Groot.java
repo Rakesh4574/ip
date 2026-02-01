@@ -1,9 +1,9 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Groot {
 
-    private Task[] tasks = new Task[100];
-    private int taskCount = 0;
+    private ArrayList<Task> tasks = new ArrayList<>();
 
     public static void main(String[] args) {
         new Groot().run();
@@ -55,10 +55,9 @@ public class Groot {
             throw new GrootException("A todo needs a description.");
         }
 
-        String description = input.substring(5).trim();
-        tasks[taskCount++] = new Todo(description);
-
-        printAdd(tasks[taskCount - 1]);
+        Task task = new Todo(input.substring(5).trim());
+        tasks.add(task);
+        printAdd(task);
     }
 
     private void handleDeadline(String input) throws GrootException {
@@ -67,9 +66,9 @@ public class Groot {
         }
 
         String[] parts = input.substring(9).split("/by", 2);
-        tasks[taskCount++] = new Deadline(parts[0].trim(), parts[1].trim());
-
-        printAdd(tasks[taskCount - 1]);
+        Task task = new Deadline(parts[0].trim(), parts[1].trim());
+        tasks.add(task);
+        printAdd(task);
     }
 
     private void handleEvent(String input) throws GrootException {
@@ -81,20 +80,22 @@ public class Groot {
         String from = input.substring(input.indexOf("/from") + 5, input.indexOf("/to")).trim();
         String to = input.substring(input.indexOf("/to") + 3).trim();
 
-        tasks[taskCount++] = new Event(description, from, to);
-        printAdd(tasks[taskCount - 1]);
+        Task task = new Event(description, from, to);
+        tasks.add(task);
+        printAdd(task);
     }
 
     private void markTask(String input, boolean done) throws GrootException {
         try {
             int index = Integer.parseInt(input.split(" ")[1]) - 1;
+            Task task = tasks.get(index);
 
             if (done) {
-                tasks[index].markAsDone();
-                printStatus("Nice! I've marked this task as done:", tasks[index]);
+                task.markAsDone();
+                printStatus("Nice! I've marked this task as done:", task);
             } else {
-                tasks[index].markAsNotDone();
-                printStatus("OK, I've marked this task as not done yet:", tasks[index]);
+                task.markAsNotDone();
+                printStatus("OK, I've marked this task as not done yet:", task);
             }
         } catch (Exception e) {
             throw new GrootException("Please specify a valid task number.");
@@ -104,8 +105,8 @@ public class Groot {
     private void listTasks() {
         printLine();
         System.out.println(" Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.println(" " + (i + 1) + "." + tasks[i]);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println(" " + (i + 1) + "." + tasks.get(i));
         }
         printLine();
     }
@@ -114,7 +115,7 @@ public class Groot {
         printLine();
         System.out.println(" Got it. I've added this task:");
         System.out.println("   " + task);
-        System.out.println(" Now you have " + taskCount + " tasks in the list.");
+        System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
         printLine();
     }
 
