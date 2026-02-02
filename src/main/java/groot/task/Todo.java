@@ -1,4 +1,4 @@
-package groot.task
+package groot.task;
 
 public class Todo extends Task {
 
