@@ -1,3 +1,5 @@
+package groot.ui;
+
 import java.util.Scanner;
 
 public class Ui {
