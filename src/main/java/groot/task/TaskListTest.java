@@ -17,7 +17,7 @@ public class TaskListTest {
     public void remove_invalidIndex_exceptionThrown() {
         try {
             new TaskList().remove(10);
-            fail(); 
+            fail();
         } catch (GrootException e) {
             assertEquals("Invalid task number.", e.getMessage());
         }
