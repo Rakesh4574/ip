@@ -15,9 +15,16 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+/**
+ * Handles loading and saving tasks to a file on the hard disk.
+ */
 public class Storage {
     private final File file;
 
+    /**
+     * Initializes a Storage object. Creates the necessary directory if it doesn't exist.
+     * * @param path The file path where task data is stored.
+     */
     public Storage(String path) {
         this.file = new File(path);
         if (file.getParentFile() != null) {
@@ -25,6 +32,10 @@ public class Storage {
         }
     }
 
+    /**
+     * Saves the list of tasks to the storage file in a serialized format.
+     * * @param tasks The list of tasks to be saved.
+     */
     public void save(ArrayList<Task> tasks) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(file))) {
             for (Task t : tasks) {
@@ -34,6 +45,11 @@ public class Storage {
         }
     }
 
+    /**
+     * Loads the tasks from the storage file.
+     * * @return An ArrayList of Task objects populated from the file.
+     * @throws GrootException If the file exists but is corrupted or unreadable.
+     */
     public ArrayList<Task> load() throws GrootException {
         ArrayList<Task> loaded = new ArrayList<>();
         if (!file.exists()) {
