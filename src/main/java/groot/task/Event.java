@@ -1,3 +1,5 @@
+package groot.task;
+
 public class Event extends Task {
     private final String from;
     private final String to;

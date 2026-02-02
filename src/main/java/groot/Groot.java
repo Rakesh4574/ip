@@ -1,8 +1,7 @@
 package groot;
-
-import groot.storage.Storage;
 import groot.task.TaskList;
 import groot.ui.Ui;
+import groot.storage.Storage;
 
 public class Groot {
     private Storage storage;
