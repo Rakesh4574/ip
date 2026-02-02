@@ -19,7 +19,7 @@ public class TaskListTest {
             new TaskList().remove(10);
             fail();
         } catch (GrootException e) {
-            assertEquals("Invalid task number.", e.getMessage());
+            assertEquals("Invalid task number. I can't prune what isn't there!", e.getMessage());
         }
     }
 }
