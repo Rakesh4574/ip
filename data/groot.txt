@@ -4,3 +4,7 @@ D | 0 | return book | 2019-10-15
 E | 0 | meeting | 2019-10-16 | 2019-10-16
 T | 0 | read book
 T | 0 | dash
+T | 0 | read book
+D | 0 | return book | 2026-06-06
+E | 0 | book club meeting | Monday 2pm | 4pm
+T | 0 | gardening
