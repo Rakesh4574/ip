@@ -1,0 +1,4 @@
+T | 0 | read book
+T | 0 | read book
+D | 0 | return book | 2019-10-15
+E | 0 | meeting | 2019-10-16 | 2019-10-16

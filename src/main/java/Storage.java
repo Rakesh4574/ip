@@ -7,7 +7,9 @@ public class Storage {
 
     public Storage(String path) {
         this.file = new File(path);
-        file.getParentFile().mkdirs();
+        if (file.getParentFile() != null) {
+            file.getParentFile().mkdirs();
+        }
     }
 
     public void save(ArrayList<Task> tasks) {
@@ -19,36 +21,37 @@ public class Storage {
         }
     }
 
-    public void load(ArrayList<Task> tasks) {
-        if (!file.exists()) return;
-
+    public ArrayList<Task> load() throws GrootException {
+        ArrayList<Task> loaded = new ArrayList<>();
+        if (!file.exists()) {
+            return loaded;
+        }
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] p = line.split(" \\| ");
                 Task t = null;
-
                 switch (p[0]) {
                     case "T":
                         t = new Todo(p[2]);
                         break;
                     case "D":
-                        LocalDate date = LocalDate.parse(p[3]);
-                        t = new Deadline(p[2], date);
+                        t = new Deadline(p[2], LocalDate.parse(p[3]));
                         break;
                     case "E":
                         t = new Event(p[2], p[3], p[4]);
                         break;
-                    default:
-                        continue;
                 }
-
-                if (p[1].equals("1")) {
-                    t.markAsDone();
+                if (t != null) {
+                    if (p[1].equals("1")) {
+                        t.markAsDone();
+                    }
+                    loaded.add(t);
                 }
-                tasks.add(t);
             }
-        } catch (IOException ignored) {
+        } catch (Exception e) {
+            throw new GrootException("Storage corrupt.");
         }
+        return loaded;
     }
 }

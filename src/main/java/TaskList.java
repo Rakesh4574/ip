@@ -11,16 +11,22 @@ public class TaskList {
         this.tasks = tasks;
     }
 
-    public void add(Task task) {
-        tasks.add(task);
+    public void add(Task t) {
+        tasks.add(t);
     }
 
-    public Task get(int index) {
-        return tasks.get(index);
+    public Task remove(int i) throws GrootException {
+        if (i < 0 || i >= tasks.size()) {
+            throw new GrootException("Invalid task number. I can't prune what isn't there!");
+        }
+        return tasks.remove(i);
     }
 
-    public Task remove(int index) {
-        return tasks.remove(index);
+    public Task get(int i) throws GrootException {
+        if (i < 0 || i >= tasks.size()) {
+            throw new GrootException("Invalid task number. That branch doesn't exist.");
+        }
+        return tasks.get(i);
     }
 
     public int size() {
