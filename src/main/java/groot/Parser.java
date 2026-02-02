@@ -7,6 +7,7 @@ import groot.task.TaskList;
 import groot.ui.Ui;
 import groot.storage.Storage;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Parser {
     public static boolean parse(String input, TaskList tasks, Ui ui, Storage storage) throws GrootException {
@@ -30,6 +31,9 @@ public class Parser {
                 break;
             case "event":
                 handleEvent(input, tasks, ui);
+                break;
+            case "find":
+                handleFind(input, tasks, ui);
                 break;
             case "mark":
             case "unmark":
@@ -86,5 +90,26 @@ public class Parser {
         int idx = Integer.parseInt(input.split(" ")[1]) - 1;
         Task t = tasks.remove(idx);
         ui.showMessage("Pruned: " + t + "\n Now you have " + tasks.size() + " tasks.");
+    }
+
+    /**
+     * Handles the searching of tasks by keyword.
+     */
+    private static void handleFind(String input, TaskList tasks, Ui ui) throws GrootException {
+        if (input.length() <= 5) {
+            throw new GrootException("I am Groot! (What am I looking for? Please provide a keyword.)");
+        }
+
+        String keyword = input.substring(5).trim();
+        ArrayList<Task> results = tasks.find(keyword);
+
+        if (results.isEmpty()) {
+            ui.showMessage("I couldn't find any tasks matching: " + keyword);
+        } else {
+            ui.showMessage("Here are the matching tasks in your list:");
+            for (int i = 0; i < results.size(); i++) {
+                ui.showMessage((i + 1) + "." + results.get(i));
+            }
+        }
     }
 }
