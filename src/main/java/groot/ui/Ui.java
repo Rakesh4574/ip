@@ -1,9 +1,11 @@
 package groot.ui;
+
 import java.util.Scanner;
 
 public class Ui {
-    private final Scanner sc = new Scanner(System.in);
     private static final String LINE = "____________________________________________________________";
+
+    private final Scanner sc = new Scanner(System.in);
 
     public void showWelcome() {
         System.out.println(LINE);
@@ -17,14 +19,17 @@ public class Ui {
     }
 
     public void showError(String message) {
+
         System.out.println(" OOPS! " + message);
     }
 
     public void showMessage(String message) {
+
         System.out.println(" " + message);
     }
 
     public String readCommand() {
+
         return sc.nextLine();
     }
 }

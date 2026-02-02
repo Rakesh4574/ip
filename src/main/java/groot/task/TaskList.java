@@ -1,8 +1,8 @@
 package groot.task;
 
-import groot.GrootException;
-
 import java.util.ArrayList;
+
+import groot.GrootException;
 
 public class TaskList {
     private final ArrayList<Task> tasks;
