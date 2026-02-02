@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 public class Deadline extends Task {
     /** The date the task is due. */
     private final LocalDate by;
+
     /** Formatter for displaying the date in a user-friendly format. */
     private static final DateTimeFormatter OUTPUT =
             DateTimeFormatter.ofPattern("MMM dd yyyy");
