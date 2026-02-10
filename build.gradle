@@ -59,7 +59,8 @@ application {
 }
 
 shadowJar {
-    archiveBaseName = "duke"
+    archiveBaseName = "Groot ChatBot"
+    archiveVersion = "V0.1"
     archiveClassifier = null
 }
 

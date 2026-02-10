@@ -1,7 +1,8 @@
-package groot.ui;
+package groot;
 
 import java.io.IOException;
 import java.util.Collections;
+import groot.MainWindow;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -40,13 +41,31 @@ public class DialogBox extends HBox {
         dialog.getStyleClass().add("reply-label");
     }
 
+    private void changeDialogStyle(String commandType) {
+        switch (commandType) {
+            case "AddCommand":
+                dialog.getStyleClass().add("add-label");
+                break;
+            case "MarkAsDoneCommand":
+            case "UnmarkAsDoneCommand":
+                dialog.getStyleClass().add("marked-label");
+                break;
+            case "DeleteCommand":
+                dialog.getStyleClass().add("delete-label");
+                break;
+            default:
+                break;
+        }
+    }
+
     public static DialogBox getUserDialog(String text, Image img) {
         return new DialogBox(text, img);
     }
 
-    public static DialogBox getGrootDialog(String text, Image img) {
+    public static DialogBox getGrootDialog(String text, Image img, String commandType) {
         var db = new DialogBox(text, img);
         db.flip();
+        db.changeDialogStyle(commandType);
         return db;
     }
 }

@@ -1,6 +1,6 @@
-package groot.ui;
+package groot;
 
-import groot.Groot;
+import groot.DialogBox;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -31,16 +31,25 @@ public class MainWindow extends AnchorPane {
 
     public void setGroot(Groot g) {
         groot = g;
+        dialogContainer.getChildren().addAll(
+                DialogBox.getGrootDialog(groot.getWelcomeMessage(), grootImage, "Welcome")
+        );
     }
 
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
         String response = groot.getResponse(input);
+        String commandType = groot.getCommandType();
+
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getGrootDialog(response, grootImage)
+                DialogBox.getGrootDialog(response, grootImage, commandType)
         );
         userInput.clear();
+
+        if (input.equalsIgnoreCase("bye")) {
+            javafx.application.Platform.exit();
+        }
     }
 }

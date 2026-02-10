@@ -1,53 +1,40 @@
 package groot.task;
 
-/**
- * Represents a generic task in the Groot application.
- * This is an abstract class that provides the foundation for specific task types
- * like Todo, Deadline, and Event.
- */
-public abstract class Task {
-    /** The text description of the task. */
-    protected String description;
+import java.time.format.DateTimeFormatter;
 
-    /** The completion status of the task. */
+public class Task {
+    public static final DateTimeFormatter DATE_DISPLAY_FORMAT = DateTimeFormatter.ofPattern("dd MMM yyyy");
+    public static final DateTimeFormatter DATE_DATA_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    private static int count = 0;
+    protected String name;
     protected boolean isDone;
+    protected int idx;
+    protected char type;
 
-    /**
-     * Initializes a new Task with the given description.
-     * By default, a new task is not completed.
-     *
-     * @param description The description of the task.
-     */
-    public Task(String description) {
-        this.description = description;
+    public Task(String name, char type) {
+        this.name = name;
         this.isDone = false;
+        this.idx = ++count;
+        this.type = type;
     }
 
-    /**
-     * Marks the task as completed.
-     */
-    public void markAsDone() {
-        isDone = true;
+    public Task(String name, char type, boolean isDone) {
+        this.name = name;
+        this.isDone = isDone;
+        this.idx = ++count;
+        this.type = type;
     }
 
-    /**
-     * Marks the task as not completed.
-     */
-    public void markAsNotDone() {
-        isDone = false;
-    }
+    public void markAsDone() { this.isDone = true; }
+    public void unmarkAsDone() { this.isDone = false; }
+    public String printTask() { return String.format("%d. %s", this.idx, getStatus()); }
+    public static int totalTask() { return count; }
+    public static void reduceTask() { count--; }
+    public void reduceIndex() { this.idx--; }
+    public String getStatus() { return String.format("[%c][%s] %s", type, (isDone ? "x" : " "), name); }
 
-    /**
-     * Returns a status icon representing whether the task is done.
-     * * @return "X" if the task is done, otherwise a blank space " ".
-     */
-    protected String statusIcon() {
-        return isDone ? "X" : " ";
+    public String dataInputString() {
+        return type + " | " + (isDone ? "1" : "0") + " | " + name;
     }
-
-    /**
-     * Returns a string formatted for saving the task to a data file.
-     * * @return A serialized string representation of the task.
-     */
-    public abstract String serialize();
 }

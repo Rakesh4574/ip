@@ -1,67 +1,48 @@
 package groot;
 
+import command.Command;
 import groot.task.TaskList;
-import groot.ui.Ui;
-import groot.storage.Storage;
+import groot.Ui;
+import groot.Storage;
+import groot.Parser;
 
-/**
- * The main class for the Groot task management application.
- * Groot is a CLI-based assistant that helps users track todos, deadlines, and events.
- */
 public class Groot {
-    /** Handles loading from and saving tasks to the hard disk. */
-    private Storage storage;
-
-    /** The internal list used to manage tasks during runtime. */
-    private TaskList tasks;
-
-    /** Handles all interactions with the user (input and output). */
+    private static final String FILEPATH = "./data/groot.txt";
     private Ui ui;
+    private Storage storage;
+    private TaskList tasks;
+    private String commandType = "";
 
-    /**
-     * Initializes a new Groot instance.
-     * Sets up the user interface and storage, and attempts to load existing tasks
-     * from the specified file path.
-     *
-     * @param filePath The path to the file where task data is persisted.
-     */
-    public Groot(String filePath) {
-        ui = new Ui();
-        storage = new Storage(filePath);
+    public Groot() {
         try {
-            tasks = new TaskList(storage.load());
-        } catch (GrootException e) {
-            ui.showError("Data file not found. Starting with empty list.");
-            tasks = new TaskList();
+            this.ui = new Ui();
+            this.storage = new Storage(FILEPATH);
+            this.tasks = new TaskList(storage.loadTasks());
+        } catch (Exception e) {
+            System.err.println("Initialization failed: " + e.getMessage());
         }
     }
 
-    /**
-     * Starts the main execution loop of the application.
-     * Displays the welcome message and continuously processes user commands
-     * until an exit command is received.
-     */
-    public void run() {
-        ui.showWelcome();
-        boolean isExit = false;
-        while (!isExit) {
-            try {
-                String fullCommand = ui.readCommand();
-                ui.showLine();
-                isExit = Parser.parse(fullCommand, tasks, ui, storage);
-            } catch (GrootException e) {
-                ui.showError(e.getMessage());
-            } finally {
-                ui.showLine();
-            }
+    public String getResponse(String input) {
+        if (input.equalsIgnoreCase("bye")) {
+            return ui.printByeMessage();
+        }
+        try {
+            Command c = Parser.parse(input);
+            String result = c.execute(tasks, ui, storage);
+            commandType = c.getClass().getSimpleName();
+            return result;
+        } catch (Exception e) {
+            commandType = "Error";
+            return "Error: " + e.getMessage();
         }
     }
 
-    /**
-     * The main entry point for the application.
-     * * @param args Command line arguments (not used).
-     */
-    public static void main(String[] args) {
-        new Groot("data/groot.txt").run();
+    public String getCommandType() {
+        return commandType;
+    }
+
+    public String getWelcomeMessage() {
+        return ui.printWelcomeMessage();
     }
 }

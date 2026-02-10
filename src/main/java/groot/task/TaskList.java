@@ -1,104 +1,59 @@
 package groot.task;
 
-import groot.GrootException;
+import groot.Storage;
+import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Manages an internal list of tasks.
- * Provides functionality to add, remove, retrieve, and query the size of the task collection.
- */
 public class TaskList {
-    /** The internal list used to store Task objects. */
-    private final ArrayList<Task> tasks;
+    private ArrayList<Task> listOfTasks;
 
-    /**
-     * Initializes an empty TaskList.
-     */
-    public TaskList() {
-
-        this.tasks = new ArrayList<>();
+    public TaskList(ArrayList<Task> listOfTasks) {
+        this.listOfTasks = listOfTasks;
     }
 
-    /**
-     * Initializes a TaskList with an existing collection of tasks.
-     *
-     * @param tasks An ArrayList of Task objects to populate the list.
-     */
-    public TaskList(ArrayList<Task> tasks) {
-
-        this.tasks = tasks;
+    public ArrayList<Task> get() {
+        return this.listOfTasks;
     }
 
-    /**
-     * Adds a task to the list.
-     *
-     * @param t The task to be added.
-     */
-    public void add(Task t) {
+    public Task deleteTask(Storage storage, int index) throws IOException {
+        Task task = listOfTasks.get(index);
+        listOfTasks.remove(index);
+        Task.reduceTask();
 
-        tasks.add(t);
-    }
-
-    /**
-     * Removes a task from the list at the specified index.
-     *
-     * @param i The index of the task to be removed (0-based).
-     * @return The task that was removed.
-     * @throws GrootException If the index is out of the valid range of the list.
-     */
-    public Task remove(int i) throws GrootException {
-        if (i < 0 || i >= tasks.size()) {
-            throw new GrootException("Invalid task number. I can't prune what isn't there!");
+        for (int i = index; i < listOfTasks.size(); i++) {
+            listOfTasks.get(i).reduceIndex();
         }
-        return tasks.remove(i);
+
+        storage.updateDataFile(this);
+        return task;
     }
 
-    /**
-     * Retrieves a task from the list at the specified index.
-     *
-     * @param i The index of the task to retrieve (0-based).
-     * @return The task at the specified index.
-     * @throws GrootException If the index is out of the valid range of the list.
-     */
-    public Task get(int i) throws GrootException {
-        if (i < 0 || i >= tasks.size()) {
-            throw new GrootException("Invalid task number. That branch doesn't exist.");
-        }
-        return tasks.get(i);
+    public void addTask(Storage storage, Task task) throws IOException {
+        this.listOfTasks.add(task);
+        storage.updateDataFile(this);
     }
 
-    /**
-     * Returns the number of tasks currently in the list.
-     *
-     * @return The size of the task list.
-     */
-    public int size() {
-
-        return tasks.size();
+    public Task markAsDone(Storage storage, int index) throws IOException {
+        Task task = listOfTasks.get(index);
+        task.markAsDone();
+        storage.updateDataFile(this);
+        return task;
     }
 
-    /**
-     * Returns the underlying list of all tasks.
-     *
-     * @return An ArrayList containing all tasks in this list.
-     */
-    public ArrayList<Task> getAll() {
-        return tasks;
+    public Task unmarkAsDone(Storage storage, int index) throws IOException {
+        Task task = listOfTasks.get(index);
+        task.unmarkAsDone();
+        storage.updateDataFile(this);
+        return task;
     }
 
-    /**
-     * Finds and returns a list of tasks whose descriptions contain the given keyword.
-     *
-     * @param keyword The string to search for.
-     * @return A list of matching tasks.
-     */
-    public ArrayList<Task> find(String keyword) {
-        ArrayList<Task> matchingTasks = new ArrayList<>();
-        for (Task task : tasks) {
-            if (task.toString().contains(keyword)) {
-                matchingTasks.add(task);
+    public ArrayList<Task> findTask(String searchedName) {
+        ArrayList<Task> resultList = new ArrayList<>();
+        for (Task task : listOfTasks) {
+            if (task.name.toLowerCase().contains(searchedName.trim().toLowerCase())) {
+                resultList.add(task);
             }
         }
-        return matchingTasks;
+        return resultList;
     }
 }

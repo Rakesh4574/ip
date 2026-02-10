@@ -1,175 +1,79 @@
 package groot;
 
-import groot.task.Task;
-import groot.task.Todo;
-import groot.task.Deadline;
-import groot.task.Event;
-import groot.task.TaskList;
-import groot.ui.Ui;
-import groot.storage.Storage;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Scanner;
 
-/**
- * Deals with making sense of the user command.
- * The <code>Parser</code> class interprets the user input and triggers the
- * appropriate responses and task list modifications.
- */
+import command.Command;
+import command.*;
+import groot.GrootException;
+import groot.task.Task;
+
 public class Parser {
+    public static final DateTimeFormatter DATE_DATA_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    /**
-     * Parses the full user input and executes the corresponding command.
-     *
-     * @param input   The raw string entered by the user.
-     * @param tasks   The list of tasks to be modified.
-     * @param ui      The user interface to display output messages.
-     * @param storage The storage handler to save changes.
-     * @return true if the command is "bye" (exits the app), false otherwise.
-     * @throws GrootException If the command is invalid or the parameters are incorrect.
-     */
-    public static boolean parse(String input, TaskList tasks, Ui ui, Storage storage) throws GrootException {
-        String command = input.split(" ")[0].toLowerCase();
+    public static Command parse(String command) throws Exception {
+        Scanner sc = new Scanner(command);
+        if (!sc.hasNext()) {
+            throw new GrootException("I am Groot? (Invalid Command!)");
+        }
 
-        switch (command) {
-            case "bye":
-                ui.showMessage("Bye. Hope to see you again soon!");
-                return true;
+        String input = sc.next();
+
+        switch (input) {
             case "list":
-                ui.showMessage("Here are the tasks in your list:");
-                for (int i = 0; i < tasks.size(); i++) {
-                    ui.showMessage((i + 1) + "." + tasks.get(i));
-                }
-                break;
-            case "todo":
-                handleTodo(input, tasks, ui);
-                break;
-            case "deadline":
-                handleDeadline(input, tasks, ui);
-                break;
-            case "event":
-                handleEvent(input, tasks, ui);
-                break;
-            case "find":
-                handleFind(input, tasks, ui);
-                break;
+                return new ListCommand();
+
             case "mark":
+                if (!sc.hasNextInt()) throw new GrootException("Please give a valid index to Mark!");
+                return new MarkAsDoneCommand(sc.nextInt() - 1);
+
             case "unmark":
-                handleMark(input, tasks, ui, command.equals("mark"));
-                break;
+                if (!sc.hasNextInt()) throw new GrootException("Please give a valid index to unMark!");
+                return new UnmarkAsDoneCommand(sc.nextInt() - 1);
+
             case "delete":
-                handleDelete(input, tasks, ui);
-                break;
+                if (!sc.hasNextInt()) throw new GrootException("Please give a valid index to delete!");
+                return new DeleteCommand(sc.nextInt() - 1);
+
+            case "todo":
+                String name = sc.nextLine().trim();
+                if (name.isBlank()) throw new GrootException("Missing Task name!");
+                return new AddCommand(name);
+
+            case "deadline":
+                String deadlineLine = sc.nextLine();
+                String[] nameAndBy = deadlineLine.split(" /by ");
+                if (nameAndBy.length != 2) throw new GrootException("Use: <Description> /by yyyy-MM-dd");
+                try {
+                    // Parse date only, then convert to LocalDateTime at 00:00
+                    LocalDateTime dateTime = LocalDate.parse(nameAndBy[1].trim(), DATE_DATA_FORMATTER).atStartOfDay();
+                    return new AddCommand(nameAndBy[0].trim(), dateTime);
+                } catch (DateTimeParseException e) {
+                    throw new GrootException("Invalid date! Use yyyy-MM-dd (e.g., 2026-02-10)");
+                }
+
+            case "event":
+                String eventLine = sc.nextLine();
+                String[] nameAndFrom = eventLine.split(" /from ");
+                if (nameAndFrom.length != 2) throw new GrootException("Use: <Desc> /from <date> /to <date>");
+                String[] fromAndTo = nameAndFrom[1].split(" /to ");
+                if (fromAndTo.length != 2) throw new GrootException("Missing /to date!");
+                try {
+                    LocalDateTime fromDt = LocalDate.parse(fromAndTo[0].trim(), DATE_DATA_FORMATTER).atStartOfDay();
+                    LocalDateTime toDt = LocalDate.parse(fromAndTo[1].trim(), DATE_DATA_FORMATTER).atStartOfDay();
+                    return new AddCommand(nameAndFrom[0].trim(), fromDt, toDt);
+                } catch (DateTimeParseException e) {
+                    throw new GrootException("Invalid date! Use yyyy-MM-dd");
+                }
+
+            case "find":
+                return new FindCommand(sc.nextLine().trim());
+
             default:
-                throw new GrootException("I am Groot? (I don't know what that means)");
-        }
-        storage.save(tasks.getAll());
-        return false;
-    }
-
-    /**
-     * Handles the creation and addition of a Todo task.
-     *
-     * @param input The raw user input string.
-     * @param tasks The TaskList to add the task to.
-     * @param ui    The Ui to confirm addition.
-     * @throws GrootException If the description is empty.
-     */
-    private static void handleTodo(String input, TaskList tasks, Ui ui) throws GrootException {
-        if (input.length() <= 5) throw new GrootException("Todo description is empty!");
-        Task t = new Todo(input.substring(5).trim());
-        tasks.add(t);
-        ui.showMessage("Added: " + t + "\n Now you have " + tasks.size() + " tasks.");
-    }
-
-    /**
-     * Handles the creation and addition of a Deadline task.
-     * Expects input in the format: deadline [desc] /by [yyyy-mm-dd].
-     *
-     * @param input The raw user input string.
-     * @param tasks The TaskList to add the task to.
-     * @param ui    The Ui to confirm addition.
-     * @throws GrootException If formatting or date parsing fails.
-     */
-    private static void handleDeadline(String input, TaskList tasks, Ui ui) throws GrootException {
-        try {
-            String[] parts = input.substring(9).split(" /by ");
-            LocalDate date = LocalDate.parse(parts[1].trim());
-            Task t = new Deadline(parts[0].trim(), date);
-            tasks.add(t);
-            ui.showMessage("Added: " + t);
-        } catch (Exception e) {
-            throw new GrootException("Use: deadline <desc> /by yyyy-mm-dd");
-        }
-    }
-
-    /**
-     * Handles the creation and addition of an Event task.
-     * Expects input in the format: event [desc] /from [start] /to [end].
-     *
-     * @param input The raw user input string.
-     * @param tasks The TaskList to add the task to.
-     * @param ui    The Ui to confirm addition.
-     * @throws GrootException If formatting fails.
-     */
-    private static void handleEvent(String input, TaskList tasks, Ui ui) throws GrootException {
-        try {
-            String[] parts = input.substring(6).split(" /from | /to ");
-            Task t = new Event(parts[0].trim(), parts[1].trim(), parts[2].trim());
-            tasks.add(t);
-            ui.showMessage("Added: " + t);
-        } catch (Exception e) {
-            throw new GrootException("Use: event <desc> /from <start> /to <end>");
-        }
-    }
-
-    /**
-     * Updates the status of a task as either marked (done) or unmarked (not done).
-     *
-     * @param input  The raw user input string.
-     * @param tasks  The TaskList containing the task.
-     * @param ui     The Ui to display the update status.
-     * @param isDone True to mark as done, false to unmark.
-     * @throws GrootException If the task index is invalid.
-     */
-    private static void handleMark(String input, TaskList tasks, Ui ui, boolean isDone) throws GrootException {
-        int idx = Integer.parseInt(input.split(" ")[1]) - 1;
-        Task t = tasks.get(idx);
-        if (isDone) t.markAsDone(); else t.markAsNotDone();
-        ui.showMessage("Updated:\n   " + t);
-    }
-
-    /**
-     * Removes a task from the list based on the user-provided index.
-     *
-     * @param input The raw user input string.
-     * @param tasks The TaskList to remove from.
-     * @param ui    The Ui to confirm deletion.
-     * @throws GrootException If the index is invalid.
-     */
-    private static void handleDelete(String input, TaskList tasks, Ui ui) throws GrootException {
-        int idx = Integer.parseInt(input.split(" ")[1]) - 1;
-        Task t = tasks.remove(idx);
-        ui.showMessage("Pruned: " + t + "\n Now you have " + tasks.size() + " tasks.");
-    }
-
-    /**
-     * Handles the searching of tasks by keyword.
-     */
-    private static void handleFind(String input, TaskList tasks, Ui ui) throws GrootException {
-        if (input.length() <= 5) {
-            throw new GrootException("I am Groot! (What am I looking for? Please provide a keyword.)");
-        }
-
-        String keyword = input.substring(5).trim();
-        ArrayList<Task> results = tasks.find(keyword);
-
-        if (results.isEmpty()) {
-            ui.showMessage("I couldn't find any tasks matching: " + keyword);
-        } else {
-            ui.showMessage("Here are the matching tasks in your list:");
-            for (int i = 0; i < results.size(); i++) {
-                ui.showMessage((i + 1) + "." + results.get(i));
-            }
+                throw new GrootException("I am Groot. (Invalid command: " + input + ")");
         }
     }
 }

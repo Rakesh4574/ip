@@ -1,58 +1,27 @@
 package groot.task;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
-/**
- * Represents a task with a specific deadline.
- * A <code>Deadline</code> object contains a description and a date by which
- * the task must be completed.
- */
 public class Deadline extends Task {
-    /** The date the task is due. */
-    private final LocalDate by;
+    private LocalDateTime by;
 
-    /** Formatter for displaying the date in a user-friendly format. */
-    private static final DateTimeFormatter OUTPUT =
-            DateTimeFormatter.ofPattern("MMM dd yyyy");
-
-    /**
-     * Initializes a new Deadline task.
-     * * @param description The description of the task.
-     * @param by The date the task is due.
-     */
-    public Deadline(String description, LocalDate by) {
-        super(description);
+    public Deadline(String name, LocalDateTime by) {
+        super(name, 'D');
         this.by = by;
     }
 
-    /**
-     * Returns a string representation of the deadline task, including
-     * its status icon and formatted due date.
-     * * @return A formatted string representing the deadline.
-     */
-    @Override
-    public String toString() {
-        return "[D][" + statusIcon() + "] " + description
-                + " (by: " + by.format(OUTPUT) + ")";
+    public Deadline(String name, LocalDateTime by, boolean isTaskDone) {
+        super(name, 'D', isTaskDone);
+        this.by = by;
     }
 
-    /**
-     * Returns a serialized version of the deadline task for file storage.
-     * * @return A string formatted for storage in the data file.
-     */
     @Override
-    public String serialize() {
-        return "D | " + (isDone ? "1" : "0") + " | "
-                + description + " | " + by;
+    public String getStatus() {
+        return String.format("%s (by: %s)", super.getStatus(), by.format(DATE_DISPLAY_FORMAT));
     }
 
-    /**
-     * Parses a date string into a LocalDate object.
-     * * @param input The date string in yyyy-mm-dd format.
-     * @return The corresponding LocalDate object.
-     */
-    public static LocalDate parseDate(String input) {
-        return LocalDate.parse(input.trim());
+    @Override
+    public String dataInputString() {
+        return super.dataInputString() + " | " + by.format(DATE_DATA_FORMAT);
     }
 }
