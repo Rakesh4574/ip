@@ -1,5 +1,6 @@
 package groot;
 
+import groot.Main;
 import javafx.application.Application;
 
 public class Launcher {
