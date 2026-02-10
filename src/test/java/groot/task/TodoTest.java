@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Tests the functionality of the {@link Todo} class.
+ * Tests the functionality of the {@link ToDo} class.
  * Verifies that the string representation and serialization format of Todo tasks
  * behave correctly under different completion statuses.
  */
@@ -16,8 +16,8 @@ public class TodoTest {
      */
     @Test
     public void serialize_notDoneTask_correctFormat() {
-        Todo todo = new Todo("borrow book");
-        assertEquals("T | 0 | borrow book", todo.serialize());
+        ToDo todo = new ToDo("borrow book");
+        assertEquals("T | 0 | borrow book", todo.dataInputString());
     }
 
     /**
@@ -26,8 +26,8 @@ public class TodoTest {
      */
     @Test
     public void toString_doneTask_correctIcon() {
-        Todo todo = new Todo("borrow book");
+        ToDo todo = new ToDo("borrow book");
         todo.markAsDone();
-        assertEquals("[T][X] borrow book", todo.toString());
+        assertEquals("[T][x] borrow book", todo.getStatus());
     }
 }
