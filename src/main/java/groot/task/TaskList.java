@@ -6,8 +6,11 @@ import java.util.ArrayList;
 
 public class TaskList {
     private static final String INDEX_OUT_OF_BOUNDS = "index must be within task list bounds";
-
     private ArrayList<Task> listOfTasks;
+
+    private void validateIndex(int index) {
+        assert index >= 0 && index < listOfTasks.size() : INDEX_OUT_OF_BOUNDS;
+    }
 
     public TaskList(ArrayList<Task> listOfTasks) {
         this.listOfTasks = listOfTasks;
