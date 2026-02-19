@@ -14,7 +14,6 @@ public class Task {
     protected boolean isDone;
     protected int idx;
     protected char type;
-    // AI-assisted: Cursor helped design tag storage and addTag/removeTag for C-Tagging
     protected Set<String> tags;
 
     public Task(String name, char type) {

@@ -49,9 +49,11 @@ public class Parser {
                 String[] nameAndBy = deadlineLine.split(" /by ");
                 if (nameAndBy.length != 2) throw new GrootException("Use: <Description> /by yyyy-MM-dd");
                 try {
-                    // Parse date only, then convert to LocalDateTime at 00:00
-                    LocalDateTime dateTime = LocalDate.parse(nameAndBy[1].trim(), DATE_DATA_FORMATTER).atStartOfDay();
-                    return new AddCommand(nameAndBy[0].trim(), dateTime);
+                    String desc = nameAndBy[0].trim();
+                    String dateStr = nameAndBy[1].trim();
+                    assert !desc.isBlank() : "deadline description must not be blank";
+                    LocalDateTime dateTime = LocalDate.parse(dateStr, DATE_DATA_FORMATTER).atStartOfDay();
+                    return new AddCommand(desc, dateTime);
                 } catch (DateTimeParseException e) {
                     throw new GrootException("Invalid date! Use yyyy-MM-dd (e.g., 2026-02-10)");
                 }
@@ -63,9 +65,11 @@ public class Parser {
                 String[] fromAndTo = nameAndFrom[1].split(" /to ");
                 if (fromAndTo.length != 2) throw new GrootException("Missing /to date!");
                 try {
+                    String desc = nameAndFrom[0].trim();
+                    assert !desc.isBlank() : "event description must not be blank";
                     LocalDateTime fromDt = LocalDate.parse(fromAndTo[0].trim(), DATE_DATA_FORMATTER).atStartOfDay();
                     LocalDateTime toDt = LocalDate.parse(fromAndTo[1].trim(), DATE_DATA_FORMATTER).atStartOfDay();
-                    return new AddCommand(nameAndFrom[0].trim(), fromDt, toDt);
+                    return new AddCommand(desc, fromDt, toDt);
                 } catch (DateTimeParseException e) {
                     throw new GrootException("Invalid date! Use yyyy-MM-dd");
                 }
@@ -87,7 +91,7 @@ public class Parser {
         }
     }
 
-    private static IndexAndTag parseIndexAndTag(Scanner sc, String commandName, String tagAction)
+    private static IndexAndTag parseIndexAndTag(Scanner sc, String commandName, String tagPrompt)
             throws GrootException {
         if (!sc.hasNextInt()) {
             throw new GrootException("Please give a valid index to " + commandName + "!");
@@ -95,7 +99,7 @@ public class Parser {
         int index = sc.nextInt() - 1;
         String tag = sc.nextLine().trim();
         if (tag.isBlank()) {
-            throw new GrootException("Please specify a tag to " + tagAction + " (e.g., " + commandName + " 1 fun)");
+            throw new GrootException("Please specify a tag to " + tagPrompt + " (e.g., " + commandName + " 1 fun)");
         }
         return new IndexAndTag(index, tag);
     }
