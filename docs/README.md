@@ -1,5 +1,7 @@
 # Groot User Guide
 
+![Product Screenshot](Ui.png)
+
 **Groot** is a desktop task management chatbot that helps you track todos, deadlines, and events. It features a simple command-line interface and persists your data locally.
 
 ## Quick Start
