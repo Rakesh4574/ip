@@ -20,10 +20,6 @@ public class TaskList {
         return this.listOfTasks;
     }
 
-    private void validateIndex(int index) {
-        assert index >= 0 && index < listOfTasks.size() : INDEX_OUT_OF_BOUNDS;
-    }
-
     public Task getTask(int index) {
         validateIndex(index);
         return listOfTasks.get(index);
