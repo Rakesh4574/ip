@@ -17,6 +17,9 @@ import java.util.Set;
 
 public class Storage {
     public static final DateTimeFormatter DATE_DATA_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final String TYPE_TODO = "T";
+    private static final String TYPE_DEADLINE = "D";
+    private static final String TYPE_EVENT = "E";
     private final String filePath;
     private File file;
 
@@ -39,21 +42,26 @@ public class Storage {
         Scanner sc = new Scanner(file);
         while (sc.hasNext()) {
             String[] parts = sc.nextLine().split(" \\| ");
+            assert parts.length >= 3 : "each storage line must have at least type, isDone, name";
             String type = parts[0];
             boolean isDone = parts[1].equals("1");
             String name = parts[2];
+            assert type.equals(TYPE_TODO) || type.equals(TYPE_DEADLINE) || type.equals(TYPE_EVENT)
+                    : "task type in storage must be T, D, or E";
 
             switch (type) {
-                case "T":
+                case TYPE_TODO:
                     Set<String> todoTags = parseTags(parts, 3);
                     listOfTasks.add(new ToDo(name, isDone, todoTags));
                     break;
-                case "D":
+                case TYPE_DEADLINE:
+                    assert parts.length >= 4 : "deadline must have by date";
                     LocalDateTime by = LocalDate.parse(parts[3], DATE_DATA_FORMATTER).atStartOfDay();
                     Set<String> deadlineTags = parseTags(parts, 4);
                     listOfTasks.add(new Deadline(name, by, isDone, deadlineTags));
                     break;
-                case "E":
+                case TYPE_EVENT:
+                    assert parts.length >= 5 : "event must have from and to dates";
                     LocalDateTime from = LocalDate.parse(parts[3], DATE_DATA_FORMATTER).atStartOfDay();
                     LocalDateTime to = LocalDate.parse(parts[4], DATE_DATA_FORMATTER).atStartOfDay();
                     Set<String> eventTags = parseTags(parts, 5);
@@ -65,6 +73,7 @@ public class Storage {
     }
 
     public void updateDataFile(TaskList taskList) throws IOException {
+        assert taskList != null : "taskList must not be null";
         ArrayList<Task> tasks = taskList.get();
         List<String> lines = new ArrayList<>();
         for (Task t : tasks) {
