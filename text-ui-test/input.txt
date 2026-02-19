@@ -1,8 +1,15 @@
+list
 todo read book
-deadline return book /by Sunday
-event project meeting /from Mon 2pm /to 4pm
+deadline return book /by 2026-02-25
+event project meeting /from 2026-02-20 /to 2026-02-20
 list
 mark 1
+list
 unmark 1
+tag 1 fun
+find #fun
+untag 1 fun
+find #fun
+delete 2
 list
 bye

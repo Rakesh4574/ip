@@ -1,33 +1,36 @@
 #!/usr/bin/env bash
 
-# create bin directory if it doesn't exist
-if [ ! -d "../bin" ]
+# Change to project root
+cd "$(dirname "$0")/.."
+
+# Delete output from previous run
+if [ -e "text-ui-test/ACTUAL.TXT" ]
 then
-    mkdir ../bin
+    rm text-ui-test/ACTUAL.TXT
 fi
 
-# delete output from previous run
-if [ -e "./ACTUAL.TXT" ]
+# Use fresh data file for deterministic test output
+mkdir -p data
+> data/groot.txt
+
+# Run the program with I/O redirection
+./gradlew -q runText < text-ui-test/input.txt > text-ui-test/ACTUAL.TXT 2>&1
+
+# Compare actual vs expected
+cd text-ui-test
+
+# Convert to Unix format if dos2unix is available (handles line ending differences)
+if command -v dos2unix &> /dev/null
 then
-    rm ACTUAL.TXT
+    cp EXPECTED.TXT EXPECTED-UNIX.TXT
+    dos2unix ACTUAL.TXT EXPECTED-UNIX.TXT 2>/dev/null || true
+    EXPECTED_FILE=EXPECTED-UNIX.TXT
+else
+    EXPECTED_FILE=EXPECTED.TXT
 fi
 
-# compile the code into the bin folder, terminates if error occurred
-if ! javac -cp ../src/main/java -Xlint:none -d ../bin ../src/main/java/*.java
-then
-    echo "********** BUILD FAILURE **********"
-    exit 1
-fi
-
-# run the program, feed commands from input.txt file and redirect the output to the ACTUAL.TXT
-java -classpath ../bin Groot < input.txt > ACTUAL.TXT
-
-# convert to UNIX format
-cp EXPECTED.TXT EXPECTED-UNIX.TXT
-dos2unix ACTUAL.TXT EXPECTED-UNIX.TXT
-
-# compare the output to the expected output
-diff ACTUAL.TXT EXPECTED-UNIX.TXT
+# Compare actual vs expected
+diff ACTUAL.TXT "$EXPECTED_FILE"
 if [ $? -eq 0 ]
 then
     echo "Test result: PASSED"

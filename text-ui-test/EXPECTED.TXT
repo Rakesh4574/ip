@@ -1,40 +1,41 @@
-__________________________________________________
- Hello! I'm Groot.
- What shall we grow today?
-__________________________________________________
-__________________________________________________
- Got it. I've added this task:
-   [T][ ] read book
- Now you have 1 tasks in the list.
-__________________________________________________
-__________________________________________________
- Got it. I've added this task:
-   [D][ ] return book (by: Sunday)
- Now you have 2 tasks in the list.
-__________________________________________________
-__________________________________________________
- Got it. I've added this task:
-   [E][ ] project meeting (from: Mon 2pm to: 4pm)
- Now you have 3 tasks in the list.
-__________________________________________________
-__________________________________________________
- Here are the tasks in your list:
- 1.[T][ ] read book
- 2.[D][ ] return book (by: Sunday)
- 3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
-__________________________________________________
-__________________________________________________
- mark 1
-__________________________________________________
-__________________________________________________
- unmark 1
-__________________________________________________
-__________________________________________________
- Here are the tasks in your list:
- 1.[T][ ] read book
- 2.[D][ ] return book (by: Sunday)
- 3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
-__________________________________________________
-__________________________________________________
- Bye. Hope to see you again soon!
-__________________________________________________
+Hello! I am Groot! What can I do for you?
+I am Groot. Your list is currently empty.
+I am Groot. Got it. I've added this task:
+ [T][ ] read book
+Now you have 1 tasks.
+I am Groot. Got it. I've added this task:
+ [D][ ] return book (by: 25 Feb 2026)
+Now you have 2 tasks.
+I am Groot. Got it. I've added this task:
+ [E][ ] project meeting (from: 20 Feb 2026 to: 20 Feb 2026)
+Now you have 3 tasks.
+I am Groot: 
+1. [T][ ] read book
+2. [D][ ] return book (by: 25 Feb 2026)
+3. [E][ ] project meeting (from: 20 Feb 2026 to: 20 Feb 2026)
+
+I am Groot! Nice! I've marked this task as done:
+[T][x] read book
+I am Groot: 
+1. [T][x] read book
+2. [D][ ] return book (by: 25 Feb 2026)
+3. [E][ ] project meeting (from: 20 Feb 2026 to: 20 Feb 2026)
+
+I am Groot. OK, I've marked this task as not done yet:
+[T][ ] read book
+I am Groot. Tagged task as #fun:
+[T][ ] read book #fun
+I am Groot: 
+1. [T][ ] read book #fun
+
+I am Groot. Removed tag #fun:
+[T][ ] read book
+I am Groot. Your list is currently empty.
+I am Groot. Noted. I've removed this task:
+[D][ ] return book (by: 25 Feb 2026)
+Now you have 2 tasks.
+I am Groot: 
+1. [T][ ] read book
+2. [E][ ] project meeting (from: 20 Feb 2026 to: 20 Feb 2026)
+
+I am Groot! Bye. Hope to see you again soon!

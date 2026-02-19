@@ -1,21 +1,25 @@
 @ECHO OFF
 
-REM create bin directory if it doesn't exist
-if not exist ..\bin mkdir ..\bin
+REM Change to project root
+cd /d "%~dp0\.."
 
-REM delete output from previous run
-if exist ACTUAL.TXT del ACTUAL.TXT
+REM Delete output from previous run
+if exist text-ui-test\ACTUAL.TXT del text-ui-test\ACTUAL.TXT
 
-REM compile the code into the bin folder
-javac  -cp ..\src\main\java -Xlint:none -d ..\bin ..\src\main\java\*.java
-IF ERRORLEVEL 1 (
-    echo ********** BUILD FAILURE **********
+REM Use fresh data file for deterministic test output
+if not exist data mkdir data
+type nul > data\groot.txt
+
+REM Run the program with I/O redirection
+gradlew.bat -q runText < text-ui-test\input.txt > text-ui-test\ACTUAL.TXT 2>&1
+
+REM Compare actual vs expected
+cd text-ui-test
+FC ACTUAL.TXT EXPECTED.TXT
+if %ERRORLEVEL% EQU 0 (
+    echo Test result: PASSED
+    exit /b 0
+) else (
+    echo Test result: FAILED
     exit /b 1
 )
-REM no error here, errorlevel == 0
-
-REM run the program, feed commands from input.txt file and redirect the output to the ACTUAL.TXT
-java -classpath ..\bin Groot < input.txt > ACTUAL.TXT
-
-REM compare the output to the expected output
-FC ACTUAL.TXT EXPECTED.TXT
