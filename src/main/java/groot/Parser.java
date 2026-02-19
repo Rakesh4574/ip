@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import command.Command;
@@ -77,6 +79,9 @@ public class Parser {
                 try {
                     LocalDateTime fromDt = LocalDate.parse(fromAndTo[0].trim(), DATE_DATA_FORMATTER).atStartOfDay();
                     LocalDateTime toDt = LocalDate.parse(fromAndTo[1].trim(), DATE_DATA_FORMATTER).atStartOfDay();
+                    if (toDt.isBefore(fromDt)) {
+                        throw new GrootException("End date/time cannot be before the start date/time!");
+                    }
                     return new AddCommand(nameAndFrom[0].trim(), fromDt, toDt);
                 } catch (DateTimeParseException e) {
                     throw new GrootException("Invalid date! Use yyyy-MM-dd");
@@ -88,9 +93,19 @@ public class Parser {
             case "tag":
                 if (!sc.hasNextInt()) throw new GrootException("Please give a valid index to tag!");
                 int tagIdx = sc.nextInt() - 1;
-                String tagToAdd = sc.nextLine().trim();
-                if (tagToAdd.isBlank()) throw new GrootException("Please specify a tag (e.g., tag 1 fun)");
-                return new TagCommand(tagIdx, tagToAdd);
+                String tagLine = sc.hasNextLine() ? sc.nextLine().trim() : "";
+                List<String> tagTokens = new ArrayList<>();
+                if (!tagLine.isBlank()) {
+                    for (String token : tagLine.split("\\s+")) {
+                        if (!token.isBlank()) {
+                            tagTokens.add(token);
+                        }
+                    }
+                }
+                if (tagTokens.isEmpty()) {
+                    throw new GrootException("Please specify at least one tag (e.g., tag 1 fun)");
+                }
+                return new TagCommand(tagIdx, tagTokens);
 
             case "untag":
                 if (!sc.hasNextInt()) throw new GrootException("Please give a valid index to untag!");

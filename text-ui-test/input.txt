@@ -6,10 +6,14 @@ list
 mark 1
 list
 unmark 1
-tag 1 fun
+tag 1 #fun #urgent #school
 find #fun
-untag 1 fun
+event party /from 2026-02-20 /to 2026-02-18
+find book
+untag 1 #urgent
 find #fun
+tag 1 no-hash
+find #no-hash
 delete 2
 list
 bye

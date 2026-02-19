@@ -23,19 +23,31 @@ I am Groot:
 
 I am Groot. OK, I've marked this task as not done yet:
 [T][ ] read book
-I am Groot. Tagged task as #fun:
-[T][ ] read book #fun
+I am Groot. Tagged task as #fun #urgent #school:
+[T][ ] read book #fun #school #urgent
 I am Groot: 
-1. [T][ ] read book #fun
+1. [T][ ] read book #fun #school #urgent
 
-I am Groot. Removed tag #fun:
-[T][ ] read book
-I am Groot. Your list is currently empty.
+Error: End date/time cannot be before the start date/time!
+I am Groot: 
+1. [T][ ] read book #fun #school #urgent
+2. [D][ ] return book (by: 25 Feb 2026)
+
+I am Groot. Removed tag #urgent:
+[T][ ] read book #fun #school
+I am Groot: 
+1. [T][ ] read book #fun #school
+
+I am Groot. Tagged task as #no-hash:
+[T][ ] read book #fun #no-hash #school
+I am Groot: 
+1. [T][ ] read book #fun #no-hash #school
+
 I am Groot. Noted. I've removed this task:
 [D][ ] return book (by: 25 Feb 2026)
 Now you have 2 tasks.
 I am Groot: 
-1. [T][ ] read book
+1. [T][ ] read book #fun #no-hash #school
 2. [E][ ] project meeting (from: 20 Feb 2026 to: 20 Feb 2026)
 
 I am Groot! Bye. Hope to see you again soon!

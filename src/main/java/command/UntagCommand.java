@@ -28,6 +28,6 @@ public class UntagCommand extends Command {
         Task task = tasks.getTask(index);
         task.removeTag(tag);
         storage.updateDataFile(tasks);
-        return "I am Groot. Removed tag #" + tag.trim().toLowerCase() + ":\n" + task.getStatus();
+        return "I am Groot. Removed tag " + tag.trim().toLowerCase() + ":\n" + task.getStatus();
     }
 }
