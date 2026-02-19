@@ -1,6 +1,7 @@
 package groot.task;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public class Event extends Task {
     private final LocalDateTime from;
@@ -14,6 +15,12 @@ public class Event extends Task {
 
     public Event(String name, LocalDateTime from, LocalDateTime to, boolean isTaskDone) {
         super(name, 'E', isTaskDone);
+        this.from = from;
+        this.to = to;
+    }
+
+    public Event(String name, LocalDateTime from, LocalDateTime to, boolean isTaskDone, Set<String> tags) {
+        super(name, 'E', isTaskDone, tags);
         this.from = from;
         this.to = to;
     }

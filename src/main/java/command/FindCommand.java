@@ -7,15 +7,19 @@ import groot.task.TaskList;
 import groot.Ui;
 
 public class FindCommand extends Command {
-    private String name;
+    private final String keyword;
+    private final boolean searchByTag;
 
-    public FindCommand(String name) {
-        this.name = name;
+    public FindCommand(String keyword) {
+        this.keyword = keyword.trim();
+        this.searchByTag = this.keyword.startsWith("#");
     }
 
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) throws Exception {
-        ArrayList<Task> foundTasks = tasks.findTask(this.name);
+        ArrayList<Task> foundTasks = searchByTag
+                ? tasks.findTaskByTag(keyword.substring(1))
+                : tasks.findTask(keyword);
         return ui.printTasks(foundTasks);
     }
 }

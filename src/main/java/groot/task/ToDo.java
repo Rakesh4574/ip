@@ -1,5 +1,7 @@
 package groot.task;
 
+import java.util.Set;
+
 public class ToDo extends Task {
     public ToDo(String name) {
         super(name, 'T');
@@ -9,8 +11,7 @@ public class ToDo extends Task {
         super(name, 'T', isTaskDone);
     }
 
-    @Override
-    public String dataInputString() {
-        return super.dataInputString();
+    public ToDo(String name, boolean isTaskDone, Set<String> tags) {
+        super(name, 'T', isTaskDone, tags);
     }
 }

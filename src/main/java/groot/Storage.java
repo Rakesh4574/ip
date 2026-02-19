@@ -9,8 +9,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Storage {
     public static final DateTimeFormatter DATE_DATA_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -24,6 +27,13 @@ public class Storage {
         file.createNewFile();
     }
 
+    private Set<String> parseTags(String[] parts, int tagIndex) {
+        if (parts.length <= tagIndex || parts[tagIndex].isBlank()) {
+            return new HashSet<>();
+        }
+        return new HashSet<>(Arrays.asList(parts[tagIndex].split(",")));
+    }
+
     public ArrayList<Task> loadTasks() throws Exception {
         ArrayList<Task> listOfTasks = new ArrayList<>();
         Scanner sc = new Scanner(file);
@@ -35,16 +45,19 @@ public class Storage {
 
             switch (type) {
                 case "T":
-                    listOfTasks.add(new ToDo(name, isDone));
+                    Set<String> todoTags = parseTags(parts, 3);
+                    listOfTasks.add(new ToDo(name, isDone, todoTags));
                     break;
                 case "D":
                     LocalDateTime by = LocalDate.parse(parts[3], DATE_DATA_FORMATTER).atStartOfDay();
-                    listOfTasks.add(new Deadline(name, by, isDone));
+                    Set<String> deadlineTags = parseTags(parts, 4);
+                    listOfTasks.add(new Deadline(name, by, isDone, deadlineTags));
                     break;
                 case "E":
                     LocalDateTime from = LocalDate.parse(parts[3], DATE_DATA_FORMATTER).atStartOfDay();
                     LocalDateTime to = LocalDate.parse(parts[4], DATE_DATA_FORMATTER).atStartOfDay();
-                    listOfTasks.add(new Event(name, from, to, isDone));
+                    Set<String> eventTags = parseTags(parts, 5);
+                    listOfTasks.add(new Event(name, from, to, isDone, eventTags));
                     break;
             }
         }

@@ -1,6 +1,7 @@
 package groot.task;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public class Deadline extends Task {
     private LocalDateTime by;
@@ -12,6 +13,11 @@ public class Deadline extends Task {
 
     public Deadline(String name, LocalDateTime by, boolean isTaskDone) {
         super(name, 'D', isTaskDone);
+        this.by = by;
+    }
+
+    public Deadline(String name, LocalDateTime by, boolean isTaskDone, Set<String> tags) {
+        super(name, 'D', isTaskDone, tags);
         this.by = by;
     }
 

@@ -72,6 +72,20 @@ public class Parser {
             case "find":
                 return new FindCommand(sc.nextLine().trim());
 
+            case "tag":
+                if (!sc.hasNextInt()) throw new GrootException("Please give a valid index to tag!");
+                int tagIdx = sc.nextInt() - 1;
+                String tagToAdd = sc.nextLine().trim();
+                if (tagToAdd.isBlank()) throw new GrootException("Please specify a tag (e.g., tag 1 fun)");
+                return new TagCommand(tagIdx, tagToAdd);
+
+            case "untag":
+                if (!sc.hasNextInt()) throw new GrootException("Please give a valid index to untag!");
+                int untagIdx = sc.nextInt() - 1;
+                String tagToRemove = sc.nextLine().trim();
+                if (tagToRemove.isBlank()) throw new GrootException("Please specify a tag to remove");
+                return new UntagCommand(untagIdx, tagToRemove);
+
             default:
                 throw new GrootException("I am Groot. (Invalid command: " + input + ")");
         }

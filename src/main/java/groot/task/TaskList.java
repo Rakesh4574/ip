@@ -15,6 +15,10 @@ public class TaskList {
         return this.listOfTasks;
     }
 
+    public Task getTask(int index) {
+        return listOfTasks.get(index);
+    }
+
     public Task deleteTask(Storage storage, int index) throws IOException {
         Task task = listOfTasks.get(index);
         listOfTasks.remove(index);
@@ -51,6 +55,17 @@ public class TaskList {
         ArrayList<Task> resultList = new ArrayList<>();
         for (Task task : listOfTasks) {
             if (task.name.toLowerCase().contains(searchedName.trim().toLowerCase())) {
+                resultList.add(task);
+            }
+        }
+        return resultList;
+    }
+
+    public ArrayList<Task> findTaskByTag(String tag) {
+        ArrayList<Task> resultList = new ArrayList<>();
+        String tagLower = tag.trim().toLowerCase();
+        for (Task task : listOfTasks) {
+            if (task.hasTag(tagLower)) {
                 resultList.add(task);
             }
         }
