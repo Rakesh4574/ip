@@ -15,6 +15,7 @@ public class Parser {
     public static final DateTimeFormatter DATE_DATA_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public static Command parse(String command) throws Exception {
+        assert command != null : "command string must not be null";
         Scanner sc = new Scanner(command);
         if (!sc.hasNext()) {
             throw new GrootException("I am Groot? (Invalid Command!)");
@@ -72,22 +73,40 @@ public class Parser {
             case "find":
                 return new FindCommand(sc.nextLine().trim());
 
-            case "tag":
-                if (!sc.hasNextInt()) throw new GrootException("Please give a valid index to tag!");
-                int tagIdx = sc.nextInt() - 1;
-                String tagToAdd = sc.nextLine().trim();
-                if (tagToAdd.isBlank()) throw new GrootException("Please specify a tag (e.g., tag 1 fun)");
-                return new TagCommand(tagIdx, tagToAdd);
-
-            case "untag":
-                if (!sc.hasNextInt()) throw new GrootException("Please give a valid index to untag!");
-                int untagIdx = sc.nextInt() - 1;
-                String tagToRemove = sc.nextLine().trim();
-                if (tagToRemove.isBlank()) throw new GrootException("Please specify a tag to remove");
-                return new UntagCommand(untagIdx, tagToRemove);
+            case "tag": {
+                IndexAndTag parsed = parseIndexAndTag(sc, "tag", "add");
+                return new TagCommand(parsed.index, parsed.tag);
+            }
+            case "untag": {
+                IndexAndTag parsed = parseIndexAndTag(sc, "untag", "remove");
+                return new UntagCommand(parsed.index, parsed.tag);
+            }
 
             default:
                 throw new GrootException("I am Groot. (Invalid command: " + input + ")");
+        }
+    }
+
+    private static IndexAndTag parseIndexAndTag(Scanner sc, String commandName, String tagAction)
+            throws GrootException {
+        if (!sc.hasNextInt()) {
+            throw new GrootException("Please give a valid index to " + commandName + "!");
+        }
+        int index = sc.nextInt() - 1;
+        String tag = sc.nextLine().trim();
+        if (tag.isBlank()) {
+            throw new GrootException("Please specify a tag to " + tagAction + " (e.g., " + commandName + " 1 fun)");
+        }
+        return new IndexAndTag(index, tag);
+    }
+
+    private static class IndexAndTag {
+        final int index;
+        final String tag;
+
+        IndexAndTag(int index, String tag) {
+            this.index = index;
+            this.tag = tag;
         }
     }
 }
