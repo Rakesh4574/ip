@@ -1,3 +1,4 @@
-T | 0 | read book | #urgent
-T | 0 | read book | #study #school
-D | 0 | return library book | 2026-02-25
+T | 0 | borrow book | library
+D | 0 | return book | 2027-12-08
+E | 0 | project meeting | 2027-12-08 | 2028-11-09
+T | 0 | Buy groceries

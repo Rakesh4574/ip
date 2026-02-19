@@ -18,8 +18,6 @@ public class Task {
     protected Set<String> tags;
 
     public Task(String name, char type) {
-        assert name != null : "task name must not be null";
-        assert type == 'T' || type == 'D' || type == 'E' : "task type must be T, D, or E";
         this.name = name;
         this.isDone = false;
         this.idx = ++count;
@@ -28,8 +26,6 @@ public class Task {
     }
 
     public Task(String name, char type, boolean isDone) {
-        assert name != null : "task name must not be null";
-        assert type == 'T' || type == 'D' || type == 'E' : "task type must be T, D, or E";
         this.name = name;
         this.isDone = isDone;
         this.idx = ++count;
@@ -38,8 +34,6 @@ public class Task {
     }
 
     public Task(String name, char type, boolean isDone, Set<String> tags) {
-        assert name != null : "task name must not be null";
-        assert type == 'T' || type == 'D' || type == 'E' : "task type must be T, D, or E";
         this.name = name;
         this.isDone = isDone;
         this.idx = ++count;
@@ -48,27 +42,33 @@ public class Task {
     }
 
     public void addTag(String tag) {
-        if (tag != null && !tag.isBlank()) {
-            tags.add(tag.trim().toLowerCase());
+        String normalized = normalizeTag(tag);
+        if (normalized != null && !normalized.isBlank()) {
+            tags.add(normalized);
         }
     }
 
+    private String normalizeTag(String tag) {
+        if (tag == null || tag.isBlank()) {
+            return null;
+        }
+        return tag.trim().toLowerCase().replaceFirst("^#+", "");
+    }
+
     public void removeTag(String tag) {
-        if (tag != null && !tag.isBlank()) {
-            tags.remove(tag.trim().toLowerCase());
+        String normalized = normalizeTag(tag);
+        if (normalized != null && !normalized.isBlank()) {
+            tags.remove(normalized);
         }
     }
 
     public boolean hasTag(String tag) {
-        return tag != null && !tag.isBlank() && tags.contains(tag.trim().toLowerCase());
+        String normalized = normalizeTag(tag);
+        return normalized != null && !normalized.isBlank() && tags.contains(normalized);
     }
 
     public Set<String> getTags() {
         return new HashSet<>(tags);
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void markAsDone() { this.isDone = true; }

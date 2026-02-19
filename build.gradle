@@ -17,7 +17,7 @@ repositories {
 }
 
 application {
-    mainClass.set("Launcher")
+    mainClass.set("groot.Launcher")
 }
 
 dependencies {
@@ -55,7 +55,7 @@ test {
 }
 
 application {
-    mainClass.set("groot.Groot")
+    mainClass.set("groot.Launcher")
 }
 
 shadowJar {
@@ -72,7 +72,7 @@ run {
 jar {
     manifest {
         attributes(
-            'Main-Class': 'groot.Groot'
+            'Main-Class': 'groot.Launcher'
         )
     }
 }

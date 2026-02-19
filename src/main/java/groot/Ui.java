@@ -14,7 +14,7 @@ public class Ui {
         }
         StringBuilder response = new StringBuilder("I am Groot: \n");
         for (int i = 0; i < tasks.size(); i++) {
-            response.append((i + 1)).append(". ").append(tasks.get(i).printTask()).append("\n");
+            response.append((i + 1)).append(". ").append(tasks.get(i).getStatus()).append("\n");
         }
         return response.toString();
     }
