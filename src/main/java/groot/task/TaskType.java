@@ -20,7 +20,8 @@ public enum TaskType {
 
     /**
      * Initializes a TaskType with its corresponding icon.
-     * * @param icon The shorthand character used for this task type.
+     *
+     * @param icon The shorthand character used for this task type.
      */
     TaskType(String icon) {
         this.icon = icon;
@@ -28,7 +29,8 @@ public enum TaskType {
 
     /**
      * Returns the shorthand icon associated with this task type.
-     * * @return The icon string (e.g., "T", "D", or "E").
+     *
+     * @return The icon string (e.g., "T", "D", or "E").
      */
     public String getIcon() {
         return icon;

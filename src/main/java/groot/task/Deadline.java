@@ -3,6 +3,9 @@ package groot.task;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+/**
+ * Represents a deadline that must be done by a certain date.
+ */
 public class Deadline extends Task {
     private LocalDateTime by;
 

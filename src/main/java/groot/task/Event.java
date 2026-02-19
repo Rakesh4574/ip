@@ -3,6 +3,9 @@ package groot.task;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+/**
+ * Represents an event spanning a date range.
+ */
 public class Event extends Task {
     private final LocalDateTime from;
     private final LocalDateTime to;

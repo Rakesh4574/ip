@@ -9,6 +9,9 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
+/**
+ * Controller for the main JavaFX window that orchestrates the dialog flow.
+ */
 public class MainWindow extends AnchorPane {
     @FXML
     private ScrollPane scrollPane;
@@ -24,11 +27,19 @@ public class MainWindow extends AnchorPane {
     private Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
     private Image grootImage = new Image(this.getClass().getResourceAsStream("/images/DaGroot.png"));
 
+    /**
+     * Sets up bindings when the window is initially displayed.
+     */
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
     }
 
+    /**
+     * Associates the Groot backend with this controller and shows the welcome message.
+     *
+     * @param g The Groot instance that handles command execution.
+     */
     public void setGroot(Groot g) {
         groot = g;
         dialogContainer.getChildren().addAll(
@@ -36,6 +47,9 @@ public class MainWindow extends AnchorPane {
         );
     }
 
+    /**
+     * Handles user input by passing it to Groot and echoing both sides of the conversation.
+     */
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();

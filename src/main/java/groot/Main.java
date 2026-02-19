@@ -7,6 +7,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+/**
+ * JavaFX application entry point that loads the main window for Groot.
+ */
 public class Main extends Application {
     private Groot groot = new Groot();
 

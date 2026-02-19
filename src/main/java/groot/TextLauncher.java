@@ -3,10 +3,14 @@ package groot;
 import java.util.Scanner;
 
 /**
- * Text-based launcher for Groot that reads from stdin and writes to stdout.
- * Used for I/O redirection testing.
+ * Lightweight console launcher that powers the I/O redirection tests.
  */
 public class TextLauncher {
+    /**
+     * Entry point for the text UI: reads stdin, writes stdout, and exits on "bye".
+     *
+     * @param args Ignored.
+     */
     public static void main(String[] args) {
         Groot groot = new Groot();
         Scanner sc = new Scanner(System.in);

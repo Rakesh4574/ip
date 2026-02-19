@@ -11,9 +11,22 @@ import command.*;
 import groot.GrootException;
 import groot.task.Task;
 
+/**
+ * Responsible for interpreting raw user commands and instantiating the corresponding Command objects.
+ */
 public class Parser {
+    /**
+     * Formatter used to read/write dates in yyyy-MM-dd format.
+     */
     public static final DateTimeFormatter DATE_DATA_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    /**
+     * Parses the provided command string and returns the matching {@link Command} instance.
+     *
+     * @param command The trimmed user input to parse.
+     * @return A Command that encapsulates the desired operation.
+     * @throws Exception When the command or its arguments are invalid.
+     */
     public static Command parse(String command) throws Exception {
         Scanner sc = new Scanner(command);
         if (!sc.hasNext()) {

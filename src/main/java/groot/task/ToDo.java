@@ -2,6 +2,9 @@ package groot.task;
 
 import java.util.Set;
 
+/**
+ * Represents a simple todo task without additional date metadata.
+ */
 public class ToDo extends Task {
     public ToDo(String name) {
         super(name, 'T');
