@@ -1,7 +1,7 @@
 .root {
     main-color: #f1f8e9;
     -fx-background-color: main-color;
-    -fx-background-image: url("../images/background.jpeg");
+    -fx-background-image: url("../images/Background.png");
     -fx-background-size: 400px 600px;
     -fx-background-repeat: round;
 }

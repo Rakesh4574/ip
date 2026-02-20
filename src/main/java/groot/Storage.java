@@ -45,7 +45,7 @@ public class Storage {
      * @return A set of normalized tags or an empty set if none are present.
      */
     private Set<String> parseTags(String[] parts, int tagIndex) {
-        if (parts.length <= tagIndex || parts[tagIndex].isBlank()) {
+        if (tagIndex < 0 || parts.length <= tagIndex || parts[tagIndex].isBlank()) {
             return new HashSet<>();
         }
         return new HashSet<>(Arrays.asList(parts[tagIndex].split(",")));
@@ -68,18 +68,24 @@ public class Storage {
 
             switch (type) {
                 case "T":
-                    Set<String> todoTags = parseTags(parts, 3);
+                    int todoTagIndex = parts.length > 3 ? 3 : -1;
+                    Set<String> todoTags = parseTags(parts, todoTagIndex);
                     listOfTasks.add(new ToDo(name, isDone, todoTags));
                     break;
                 case "D":
-                    LocalDateTime by = LocalDate.parse(parts[3], DATE_DATA_FORMATTER).atStartOfDay();
-                    Set<String> deadlineTags = parseTags(parts, 4);
+                    String dateValue = parts[parts.length - 1];
+                    int deadlineTagIndex = parts.length > 4 ? parts.length - 2 : -1;
+                    Set<String> deadlineTags = parseTags(parts, deadlineTagIndex);
+                    LocalDateTime by = LocalDate.parse(dateValue, DATE_DATA_FORMATTER).atStartOfDay();
                     listOfTasks.add(new Deadline(name, by, isDone, deadlineTags));
                     break;
                 case "E":
-                    LocalDateTime from = LocalDate.parse(parts[3], DATE_DATA_FORMATTER).atStartOfDay();
-                    LocalDateTime to = LocalDate.parse(parts[4], DATE_DATA_FORMATTER).atStartOfDay();
-                    Set<String> eventTags = parseTags(parts, 5);
+                    String toValue = parts[parts.length - 1];
+                    String fromValue = parts[parts.length - 2];
+                    int eventTagIndex = parts.length > 5 ? parts.length - 3 : -1;
+                    Set<String> eventTags = parseTags(parts, eventTagIndex);
+                    LocalDateTime from = LocalDate.parse(fromValue, DATE_DATA_FORMATTER).atStartOfDay();
+                    LocalDateTime to = LocalDate.parse(toValue, DATE_DATA_FORMATTER).atStartOfDay();
                     listOfTasks.add(new Event(name, from, to, isDone, eventTags));
                     break;
             }
