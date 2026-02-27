@@ -17,7 +17,7 @@ public class Task {
     /**
      * Format used when persisting dates to disk.
      */
-    public static final DateTimeFormatter DATE_DATA_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public static final DateTimeFormatter DATE_DATA_FORMAT = DateTimeFormatter.ofPattern("uuuu-MM-dd");
 
     private static int count = 0;
     protected String name;
@@ -182,6 +182,33 @@ public class Task {
      */
     public String getStatus() {
         return String.format("[%c][%s] %s%s", type, (isDone ? "x" : " "), name, tagsToString());
+    }
+
+    /**
+     * Determines whether another task is considered the same for duplication checks.
+     */
+    public boolean isSameTask(Task other) {
+        if (other == null) {
+            return false;
+        }
+        if (this.type != other.type) {
+            return false;
+        }
+        if (!normalizeName(this.name).equalsIgnoreCase(normalizeName(other.name))) {
+            return false;
+        }
+        return hasSameDetails(other);
+    }
+
+    /**
+     * Provides a hook for subclasses to compare additional metadata (e.g., dates).
+     */
+    protected boolean hasSameDetails(Task other) {
+        return true;
+    }
+
+    private static String normalizeName(String rawName) {
+        return rawName == null ? "" : rawName.trim();
     }
 
     /**

@@ -38,4 +38,13 @@ public class Event extends Task {
     public String dataInputString() {
         return super.dataInputString() + " | " + from.format(DATE_DATA_FORMAT) + " | " + to.format(DATE_DATA_FORMAT);
     }
+
+    @Override
+    protected boolean hasSameDetails(Task other) {
+        if (!(other instanceof Event)) {
+            return false;
+        }
+        Event otherEvent = (Event) other;
+        return from.equals(otherEvent.from) && to.equals(otherEvent.to);
+    }
 }

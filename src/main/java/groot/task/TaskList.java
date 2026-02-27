@@ -10,6 +10,7 @@ import java.util.List;
  * Wrapper around the collection of tasks that centralizes mutation and lookup logic.
  */
 public class TaskList {
+    private static final String DUPLICATE_TASK_MESSAGE = "This task already exists in your list.";
     private ArrayList<Task> listOfTasks;
     private List<Task> lastDisplayedView;
 
@@ -71,7 +72,10 @@ public class TaskList {
      * @param task    The task to add.
      * @throws IOException When storage writing fails.
      */
-    public void addTask(Storage storage, Task task) throws IOException {
+    public void addTask(Storage storage, Task task) throws IOException, GrootException {
+        if (containsDuplicate(task)) {
+            throw new GrootException(DUPLICATE_TASK_MESSAGE);
+        }
         this.listOfTasks.add(task);
         storage.updateDataFile(this);
     }
@@ -150,6 +154,15 @@ public class TaskList {
         } else {
             this.lastDisplayedView = new ArrayList<>(view);
         }
+    }
+
+    private boolean containsDuplicate(Task candidate) {
+        for (Task existing : listOfTasks) {
+            if (existing.isSameTask(candidate)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

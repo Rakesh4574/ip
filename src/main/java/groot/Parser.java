@@ -22,7 +22,7 @@ public class Parser {
      * Formatter used to read/write dates in yyyy-MM-dd format.
      */
     public static final DateTimeFormatter DATE_DATA_FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd").withResolverStyle(ResolverStyle.STRICT);
+            DateTimeFormatter.ofPattern("uuuu-MM-dd").withResolverStyle(ResolverStyle.STRICT);
 
     /**
      * Parses the provided command string and returns the matching {@link Command} instance.
@@ -64,13 +64,8 @@ public class Parser {
                 String deadlineLine = sc.nextLine();
                 String[] nameAndBy = deadlineLine.split(" /by ");
                 if (nameAndBy.length != 2) throw new GrootException("Use: <Description> /by yyyy-MM-dd");
-                try {
-                    // Parse date only, then convert to LocalDateTime at 00:00
-                    LocalDateTime dateTime = LocalDate.parse(nameAndBy[1].trim(), DATE_DATA_FORMATTER).atStartOfDay();
-                    return new AddCommand(nameAndBy[0].trim(), dateTime);
-                } catch (DateTimeParseException e) {
-                    throw new GrootException("Invalid date! Use yyyy-MM-dd (e.g., 2026-02-10)");
-                }
+                LocalDateTime dateTime = parseDate(nameAndBy[1]);
+                return new AddCommand(nameAndBy[0].trim(), dateTime);
 
             case "event":
                 String eventLine = sc.nextLine();
@@ -78,16 +73,12 @@ public class Parser {
                 if (nameAndFrom.length != 2) throw new GrootException("Use: <Desc> /from <date> /to <date>");
                 String[] fromAndTo = nameAndFrom[1].split(" /to ");
                 if (fromAndTo.length != 2) throw new GrootException("Missing /to date!");
-                try {
-                    LocalDateTime fromDt = LocalDate.parse(fromAndTo[0].trim(), DATE_DATA_FORMATTER).atStartOfDay();
-                    LocalDateTime toDt = LocalDate.parse(fromAndTo[1].trim(), DATE_DATA_FORMATTER).atStartOfDay();
-                    if (toDt.isBefore(fromDt)) {
-                        throw new GrootException("End date/time cannot be before the start date/time!");
-                    }
-                    return new AddCommand(nameAndFrom[0].trim(), fromDt, toDt);
-                } catch (DateTimeParseException e) {
-                    throw new GrootException("Invalid date! Use yyyy-MM-dd");
+                LocalDateTime fromDt = parseDate(fromAndTo[0]);
+                LocalDateTime toDt = parseDate(fromAndTo[1]);
+                if (toDt.isBefore(fromDt)) {
+                    throw new GrootException("End date/time cannot be before the start date/time!");
                 }
+                return new AddCommand(nameAndFrom[0].trim(), fromDt, toDt);
 
             case "find":
                 return new FindCommand(sc.nextLine().trim());
@@ -118,6 +109,15 @@ public class Parser {
 
             default:
                 throw new GrootException("I am Groot. (Invalid command: " + input + ")");
+        }
+    }
+
+    private static LocalDateTime parseDate(String rawDate) throws GrootException {
+        String trimmed = rawDate == null ? "" : rawDate.trim();
+        try {
+            return LocalDate.parse(trimmed, DATE_DATA_FORMATTER).atStartOfDay();
+        } catch (DateTimeParseException e) {
+            throw new GrootException(String.format("Invalid date '%s'. Use yyyy-MM-dd (e.g., 2026-02-10)", trimmed));
         }
     }
 }

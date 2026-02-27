@@ -22,7 +22,7 @@ import java.util.Set;
 public class Storage {
     /** Formatter used for the yyyy-MM-dd representation saved on disk. */
     public static final DateTimeFormatter DATE_DATA_FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd").withResolverStyle(ResolverStyle.STRICT);
+            DateTimeFormatter.ofPattern("uuuu-MM-dd").withResolverStyle(ResolverStyle.STRICT);
     private final String filePath;
     private File file;
 

@@ -33,4 +33,13 @@ public class Deadline extends Task {
     public String dataInputString() {
         return super.dataInputString() + " | " + by.format(DATE_DATA_FORMAT);
     }
+
+    @Override
+    protected boolean hasSameDetails(Task other) {
+        if (!(other instanceof Deadline)) {
+            return false;
+        }
+        Deadline otherDeadline = (Deadline) other;
+        return by.equals(otherDeadline.by);
+    }
 }

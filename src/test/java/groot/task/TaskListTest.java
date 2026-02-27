@@ -3,10 +3,18 @@ package groot.task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import groot.GrootException;
+import groot.Storage;
 
 public class TaskListTest {
 
@@ -96,5 +104,44 @@ public class TaskListTest {
 
         ArrayList<Task> found = taskList.findTaskByTag("work");
         assertTrue(found.isEmpty());
+    }
+
+    @Test
+    public void addTask_duplicateToDo_throwsGrootException() throws Exception {
+        Path tempFile = Files.createTempFile("tasklist-dup", ".txt");
+        tempFile.toFile().deleteOnExit();
+        Storage storage = new Storage(tempFile.toString());
+
+        taskList.addTask(storage, new ToDo("read book"));
+        GrootException e = assertThrows(GrootException.class,
+                () -> taskList.addTask(storage, new ToDo("Read book")));
+        assertTrue(e.getMessage().contains("already exists"));
+    }
+
+    @Test
+    public void addTask_duplicateDeadline_throwsGrootException() throws Exception {
+        Path tempFile = Files.createTempFile("tasklist-dup", ".txt");
+        tempFile.toFile().deleteOnExit();
+        Storage storage = new Storage(tempFile.toString());
+
+        LocalDateTime due = LocalDate.of(2026, 2, 20).atStartOfDay();
+        taskList.addTask(storage, new Deadline("Submit report", due));
+        GrootException e = assertThrows(GrootException.class,
+                () -> taskList.addTask(storage, new Deadline("submit report", due)));
+        assertTrue(e.getMessage().contains("already exists"));
+    }
+
+    @Test
+    public void addTask_duplicateEvent_throwsGrootException() throws Exception {
+        Path tempFile = Files.createTempFile("tasklist-dup", ".txt");
+        tempFile.toFile().deleteOnExit();
+        Storage storage = new Storage(tempFile.toString());
+
+        LocalDateTime start = LocalDate.of(2026, 3, 15).atStartOfDay();
+        LocalDateTime end = LocalDate.of(2026, 3, 16).atStartOfDay();
+        taskList.addTask(storage, new Event("Conference", start, end));
+        GrootException e = assertThrows(GrootException.class,
+                () -> taskList.addTask(storage, new Event("conference", start, end)));
+        assertTrue(e.getMessage().contains("already exists"));
     }
 }

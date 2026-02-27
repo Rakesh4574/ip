@@ -111,4 +111,25 @@ public class ParserTest {
     public void parse_tagMissingTagName_throwsException() {
         assertThrows(Exception.class, () -> Parser.parse("tag 1"));
     }
+
+    @Test
+    public void parse_deadlineInvalidDate_throwsGrootException() {
+        GrootException e = assertThrows(GrootException.class,
+                () -> Parser.parse("deadline report /by 2025-02-31"));
+        assertTrue(e.getMessage().contains("Invalid date '2025-02-31'"));
+    }
+
+    @Test
+    public void parse_eventFromInvalidDate_throwsGrootException() {
+        GrootException e = assertThrows(GrootException.class,
+                () -> Parser.parse("event meeting /from 2025-02-31 /to 2025-03-01"));
+        assertTrue(e.getMessage().contains("Invalid date '2025-02-31'"));
+    }
+
+    @Test
+    public void parse_eventToInvalidDate_throwsGrootException() {
+        GrootException e = assertThrows(GrootException.class,
+                () -> Parser.parse("event meeting /from 2025-02-28 /to 2025-02-30"));
+        assertTrue(e.getMessage().contains("Invalid date '2025-02-30'"));
+    }
 }
