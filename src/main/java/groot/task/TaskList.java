@@ -1,14 +1,17 @@
 package groot.task;
 
+import groot.GrootException;
 import groot.Storage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Wrapper around the collection of tasks that centralizes mutation and lookup logic.
  */
 public class TaskList {
     private ArrayList<Task> listOfTasks;
+    private List<Task> lastDisplayedView;
 
     /**
      * Initializes the TaskList with pre-existing tasks loaded from storage.
@@ -17,6 +20,7 @@ public class TaskList {
      */
     public TaskList(ArrayList<Task> listOfTasks) {
         this.listOfTasks = listOfTasks;
+        this.lastDisplayedView = new ArrayList<>(listOfTasks);
     }
 
     /**
@@ -56,6 +60,7 @@ public class TaskList {
         }
 
         storage.updateDataFile(this);
+        removeFromView(task);
         return task;
     }
 
@@ -132,5 +137,52 @@ public class TaskList {
             }
         }
         return resultList;
+    }
+
+    /**
+     * Updates the cached view that the user most recently saw.
+     *
+     * @param view The list that was displayed (null resets to the full list).
+     */
+    public void updateDisplayedView(List<Task> view) {
+        if (view == null) {
+            this.lastDisplayedView = new ArrayList<>(listOfTasks);
+        } else {
+            this.lastDisplayedView = new ArrayList<>(view);
+        }
+    }
+
+    /**
+     * Converts a view-relative index to the current list index.
+     *
+     * @param viewIndex Zero-based index based on the last displayed list.
+     * @return The corresponding index within the full task list.
+     * @throws GrootException When the view is empty or the provided index is out of range.
+     */
+    public int resolveIndexFromView(int viewIndex) throws GrootException {
+        if (lastDisplayedView == null || lastDisplayedView.isEmpty()) {
+            throw new GrootException("The most recent list you saw is empty.");
+        }
+        if (viewIndex < 0 || viewIndex >= lastDisplayedView.size()) {
+            throw new GrootException("Please choose a task number between 1 and " +
+                    lastDisplayedView.size() + " from the list you most recently displayed.");
+        }
+        Task target = lastDisplayedView.get(viewIndex);
+        int globalIndex = listOfTasks.indexOf(target);
+        if (globalIndex == -1) {
+            throw new GrootException("That task can no longer be found in the list.");
+        }
+        return globalIndex;
+    }
+
+    /**
+     * Removes a task from the cached view (used after deletion).
+     *
+     * @param task Task to drop from the last displayed list.
+     */
+    public void removeFromView(Task task) {
+        if (lastDisplayedView != null) {
+            lastDisplayedView.remove(task);
+        }
     }
 }
