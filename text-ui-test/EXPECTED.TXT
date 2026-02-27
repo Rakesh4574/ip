@@ -9,6 +9,7 @@ Now you have 2 tasks.
 I am Groot. Got it. I've added this task:
  [E][ ] project meeting (from: 20 Feb 2026 to: 20 Feb 2026)
 Now you have 3 tasks.
+Error: This task already exists in your list.
 I am Groot: 
 1. [T][ ] read book
 2. [D][ ] return book (by: 25 Feb 2026)
@@ -29,6 +30,7 @@ I am Groot:
 1. [T][ ] read book #fun #school #urgent
 
 Error: End date/time cannot be before the start date/time!
+Error: Invalid date '2026-02-31'. Use yyyy-MM-dd (e.g., 2026-02-10)
 I am Groot: 
 1. [T][ ] read book #fun #school #urgent
 2. [D][ ] return book (by: 25 Feb 2026)
@@ -45,7 +47,7 @@ I am Groot:
 
 I am Groot. Noted. I've removed this task:
 [D][ ] return book (by: 25 Feb 2026)
-Now you have 2 tasks.
+Now you have 3 tasks.
 I am Groot: 
 1. [T][ ] read book #fun #no-hash #school
 2. [E][ ] project meeting (from: 20 Feb 2026 to: 20 Feb 2026)
