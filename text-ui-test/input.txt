@@ -16,6 +16,7 @@ untag 1 #urgent
 find #fun
 tag 1 no-hash
 find #no-hash
+list
 delete 2
 list
 bye

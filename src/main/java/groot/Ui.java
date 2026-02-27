@@ -59,9 +59,9 @@ public class Ui {
      * @param task The newly added task.
      * @return The confirmation message including the current task count.
      */
-    public String printAddTask(Task task) {
+    public String printAddTask(Task task, int currentTaskCount) {
         return String.format("I am Groot. Got it. I've added this task:\n %s\nNow you have %d tasks.",
-                task.getStatus(), Task.totalTask());
+                task.getStatus(), currentTaskCount);
     }
 
     /**
@@ -70,9 +70,9 @@ public class Ui {
      * @param task The removed task.
      * @return The confirmation message including the remaining task count.
      */
-    public String printDeleteTask(Task task) {
+    public String printDeleteTask(Task task, int currentTaskCount) {
         return "I am Groot. Noted. I've removed this task:\n" + task.getStatus() +
-                "\nNow you have " + Task.totalTask() + " tasks.";
+                "\nNow you have " + currentTaskCount + " tasks.";
     }
 
     /**

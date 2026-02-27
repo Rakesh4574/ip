@@ -28,6 +28,7 @@ public class FindCommand extends Command {
         ArrayList<Task> foundTasks = searchByTag
                 ? tasks.findTaskByTag(keyword.substring(1))
                 : tasks.findTask(keyword);
+        tasks.updateDisplayedView(foundTasks);
         return ui.printTasks(foundTasks);
     }
 }

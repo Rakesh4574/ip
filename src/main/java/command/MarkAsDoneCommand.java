@@ -22,7 +22,8 @@ public class MarkAsDoneCommand extends Command {
 
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) throws Exception {
-        Task task = tasks.markAsDone(storage, index);
+        int actualIndex = tasks.resolveIndexFromView(index);
+        Task task = tasks.markAsDone(storage, actualIndex);
         return ui.printMarkAsDone(task);
     }
 }

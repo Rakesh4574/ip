@@ -25,7 +25,8 @@ public class UntagCommand extends Command {
 
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) throws Exception {
-        Task task = tasks.getTask(index);
+        int actualIndex = tasks.resolveIndexFromView(index);
+        Task task = tasks.getTask(actualIndex);
         task.removeTag(tag);
         storage.updateDataFile(tasks);
         return "I am Groot. Removed tag " + tag.trim().toLowerCase() + ":\n" + task.getStatus();

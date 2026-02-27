@@ -22,7 +22,8 @@ public class UnmarkAsDoneCommand extends Command {
 
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) throws Exception {
-        Task task = tasks.unmarkAsDone(storage, index);
+        int actualIndex = tasks.resolveIndexFromView(index);
+        Task task = tasks.unmarkAsDone(storage, actualIndex);
         return ui.printUnmarkAsDone(task);
     }
 }

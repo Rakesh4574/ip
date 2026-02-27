@@ -14,8 +14,15 @@
 
 ## Features
 
+> [!IMPORTANT]
+> **Understanding Contextual Indexing:** > Groot is smart—commands that use an `INDEX` (like `mark` or `delete`) target the **most recently shown list**. 
+> * If you just searched for `#work`, `mark 1` marks the first result of that search. 
+> * To return to the full list and reset the index context, simply run the `list` command.
+
+
+
 ### Viewing tasks: `list`
-Displays all tasks currently in your list.
+Displays all tasks currently in your list and resets the indexing context to include all tasks.
 - **Format:** `list`
 
 ### Adding a todo: `todo`
@@ -24,7 +31,7 @@ Adds a simple todo task. Groot will refuse to add the task if an identical descr
 - **Example:** `todo Buy groceries`
 
 ### Adding a deadline: `deadline`
-Adds a task with a due date. Groot uses **strict date validation** impossible dates (e.g., Feb 31st) will be rejected.
+Adds a task with a due date. Groot uses **strict date validation**; impossible dates (e.g., Feb 31st) will be rejected.
 - **Format:** `deadline DESCRIPTION /by yyyy-MM-dd`
 - **Example:** `deadline Submit report /by 2026-02-20`
 
@@ -34,12 +41,12 @@ Adds a task with a start and end date. The end date cannot be before the start d
 - **Example:** `event Team meeting /from 2026-02-15 /to 2026-02-15`
 
 ### Marking/Deleting tasks: `mark`, `unmark`, `delete`
-Modifies or removes a task. These commands use **contextual indexing**, meaning the index refers to the list currently shown in the window (useful after a `find` command).
+Modifies or removes a task based on the **currently visible list**.
 - **Format:** `mark INDEX`, `unmark INDEX`, or `delete INDEX`
 - **Example:** `mark 1`
 
 ### Finding tasks: `find`
-Searches for tasks by keyword or by tag.
+Searches for tasks by keyword or by tag. Subsequent index-based commands will act on these results.
 - **Format:** `find KEYWORD` or `find #TAG`
 - **Example:** `find #work`
 
@@ -63,23 +70,23 @@ Exits the application. The input UI will disable before the application closes a
 
 | Command | Format | Description |
 | :--- | :--- | :--- |
-| **list** | `list` | List all tasks currently visible |
+| **list** | `list` | List all tasks and reset view context |
 | **todo** | `todo DESCRIPTION` | Add a simple todo task |
-| **deadline** | `deadline DESC /by yyyy-MM-dd` | Add a task with a due date |
+| **deadline** | `deadline DESC /by yyyy-MM-dd` | Add a task with a strict due date |
 | **event** | `event DESC /from yyyy-MM-dd /to yyyy-MM-dd` | Add a task with a date range |
-| **mark** | `mark INDEX` | Mark a specific task as done |
-| **unmark** | `unmark INDEX` | Mark a specific task as not done |
-| **delete** | `delete INDEX` | Remove a task from the list |
-| **find** | `find KEYWORD` or `find #TAG` | Search tasks by description or hashtag |
-| **tag** | `tag INDEX TAG1 [TAG2...]` | Add one or multiple tags to a task |
-| **untag** | `untag INDEX TAG` | Remove a specific tag from a task |
+| **mark** | `mark INDEX` | Mark task from **current view** as done |
+| **unmark** | `unmark INDEX` | Mark task from **current view** as not done |
+| **delete** | `delete INDEX` | Remove task from the **current view** |
+| **find** | `find KEYWORD` or `find #TAG` | Filter tasks by description or hashtag |
+| **tag** | `tag INDEX TAG1 [TAG2...]` | Add one or multiple tags |
+| **untag** | `untag INDEX TAG` | Remove a tag from a task |
 | **bye** | `bye` | Save data and exit the application |
 
 ---
 
 ## Notes
 
-- **Contextual Indexing:** The `INDEX` always refers to the 1-based number shown in the **currently displayed list**. If you have just performed a `find`, use the index shown in the search results.
+- **Contextual Indexing:** Always use the 1-based number shown in the window. If the task you want to modify isn't visible because of a previous `find` command, run `list` to see everything again.
 - **Duplicate Detection:** Groot prevents adding a task that has the same description and dates as an existing entry.
-- **Strict Date Parsing:** Dates must be valid calendar dates in `yyyy-MM-dd` format. Impossible dates like `2026-02-31` will trigger an error.
-- **Tag Normalization:** Tags are stored in lowercase. You do not need to type the `#` symbol when using the `tag` command, Groot handles it for you.
+- **Strict Date Parsing:** Dates must be valid calendar dates. Impossible dates like `2026-02-31` will trigger an error.
+- **Tag Normalization:** Tags are stored in lowercase. You do not need to type the `#` symbol when using the `tag` command; Groot handles it for you.

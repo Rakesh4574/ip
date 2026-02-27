@@ -74,6 +74,7 @@ public class TaskList {
      */
     public void addTask(Storage storage, Task task) throws IOException, GrootException {
         if (containsDuplicate(task)) {
+            Task.reduceTask();
             throw new GrootException(DUPLICATE_TASK_MESSAGE);
         }
         this.listOfTasks.add(task);

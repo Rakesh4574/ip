@@ -45,9 +45,14 @@ I am Groot. Tagged task as #no-hash:
 I am Groot: 
 1. [T][ ] read book #fun #no-hash #school
 
+I am Groot: 
+1. [T][ ] read book #fun #no-hash #school
+2. [D][ ] return book (by: 25 Feb 2026)
+3. [E][ ] project meeting (from: 20 Feb 2026 to: 20 Feb 2026)
+
 I am Groot. Noted. I've removed this task:
 [D][ ] return book (by: 25 Feb 2026)
-Now you have 3 tasks.
+Now you have 2 tasks.
 I am Groot: 
 1. [T][ ] read book #fun #no-hash #school
 2. [E][ ] project meeting (from: 20 Feb 2026 to: 20 Feb 2026)

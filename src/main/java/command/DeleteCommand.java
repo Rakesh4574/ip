@@ -22,7 +22,8 @@ public class DeleteCommand extends Command {
 
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) throws Exception {
-        Task deletedTask = tasks.deleteTask(storage, index);
-        return ui.printDeleteTask(deletedTask);
+        int actualIndex = tasks.resolveIndexFromView(index);
+        Task deletedTask = tasks.deleteTask(storage, actualIndex);
+        return ui.printDeleteTask(deletedTask, tasks.get().size());
     }
 }

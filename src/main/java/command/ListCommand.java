@@ -10,6 +10,7 @@ import groot.Ui;
 public class ListCommand extends Command {
     @Override
     public String execute(TaskList taskList, Ui ui, Storage storage) {
+        taskList.updateDisplayedView(taskList.get());
         return ui.printTasks(taskList.get());
     }
 }

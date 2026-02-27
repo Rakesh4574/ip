@@ -30,7 +30,8 @@ public class TagCommand extends Command {
 
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) throws Exception {
-        Task task = tasks.getTask(index);
+        int actualIndex = tasks.resolveIndexFromView(index);
+        Task task = tasks.getTask(actualIndex);
         Set<String> normalizedTags = new LinkedHashSet<>();
         for (String tag : tags) {
             String normalized = normalize(tag);
